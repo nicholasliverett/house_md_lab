@@ -21,18 +21,35 @@ if ($imageUrl) {
     echo '<div class="vuln-section">';
     echo "<h3>Scan Results</h3>";
     
-    // Intentionally vulnerable to SSRF
-    if (@getimagesize($imageUrl)) {
-        echo "<img src='$imageUrl' width='600' alt='Medical scan'><br>";
-        echo "<p>Loaded from: $imageUrl</p>";
-    } else {
-        // Simulated internal system access
-        if (strpos($imageUrl, 'internal') !== false) {
-            echo "<p>Internal system accessed successfully!</p>";
-            echo "<p>System status: <strong>Operational</strong></p>";
+    // SSRF vulnerability implementation
+    try {
+        // Create a context that follows redirects
+        $context = stream_context_create([
+            'http' => ['follow_location' => 1],
+            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]
+        ]);
+        
+        // Get the content
+        $content = @file_get_contents($imageUrl, false, $context);
+        
+        if ($content !== false) {
+            // Try to display as image
+            if (@imagecreatefromstring($content)) {
+                $base64 = base64_encode($content);
+                $mime = (new finfo(FILEINFO_MIME_TYPE))->buffer($content);
+                echo "<img src='data:$mime;base64,$base64' width='600'><br>";
+                echo "<p>Image loaded from: $imageUrl</p>";
+            } 
+            // Display as text if not an image
+            else {
+                echo "<h4>Non-image content from $imageUrl:</h4>";
+                echo "<pre>" . htmlspecialchars($content) . "</pre>";
+            }
         } else {
-            echo "<p>Error loading image from: $imageUrl</p>";
+            echo "<p>Error loading content from: $imageUrl</p>";
         }
+    } catch (Exception $e) {
+        echo "<p>Error: " . $e->getMessage() . "</p>";
     }
     
     echo '</div>';
