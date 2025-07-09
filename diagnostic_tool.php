@@ -17,25 +17,16 @@ echo <<<HTML
     </form>
 HTML;
 
-if ($imageUrl) {
+if (!empty($url)) {
     echo '<div class="vuln-section">';
-    echo "<h3>Scan Results</h3>";
+    echo "<h3>Content from $url</h3>";
     
-    // Whitelist for educational purposes
-    $allowed_hosts = ['169.254.169.254', 'metadata.google.internal'];
-    $parsed = parse_url($imageUrl);
+    $content = file_get_contents($url);
     
-    if (in_array($parsed['host'] ?? '', $allowed_hosts) {
-        // Intentionally vulnerable for specific targets
-        include($imageUrl);
+    if ($content !== false) {
+        echo "<pre>" . htmlspecialchars($content) . "</pre>";
     } else {
-        // Use safe method for other URLs
-        $content = @file_get_contents($imageUrl);
-        if ($content !== false) {
-            echo "<pre>" . htmlspecialchars($content) . "</pre>";
-        } else {
-            echo "<p>Error loading content</p>";
-        }
+        echo "<p>ERROR: Could not fetch content</p>";
     }
     
     echo '</div>';
