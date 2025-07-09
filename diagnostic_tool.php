@@ -3,7 +3,7 @@ require_once 'includes.php';
 
 echo get_header("Diagnostic Tool", "Treating illness is why we became doctors. Treating patients is what makes most doctors miserable.");
 
-$imageUrl = $_GET['image'] ?? '';
+$url = $_GET['image'] ?? '';
 
 echo <<<HTML
     <h2>Medical Imaging Viewer</h2>
@@ -11,7 +11,7 @@ echo <<<HTML
     
     <form method="GET">
         <div class="form-group">
-            <input type="text" name="image" placeholder="Enter image URL" value="$imageUrl">
+            <input type="text" name="image" placeholder="Enter image URL" value="$url">
             <button type="submit">View Image</button>
         </div>
     </form>
