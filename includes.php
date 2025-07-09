@@ -1,0 +1,151 @@
+<?php
+// includes.php
+session_start();
+
+function get_header($title, $quote) {
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$title - Princeton-Plainsboro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav {
+            background: #3498db;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .house-quote {
+            font-style: italic;
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.3em;
+            padding: 10px;
+            border-left: 4px solid #e74c3c;
+            background: #fdecea;
+        }
+        .vuln-section {
+            border: 2px dashed #e74c3c;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+            background: #fffaf0;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #c0392b;
+        }
+        .results {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .admin-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Princeton-Plainsboro Teaching Hospital</h1>
+            <p>Department of Diagnostic Medicine</p>
+        </header>
+        
+        <div class="house-quote">
+            "$quote"
+        </div>
+        
+        <nav>
+            <a href="index.php">Home</a>
+            <a href="patient_search.php">Patient Search</a>
+            <a href="diagnostic_tool.php">Diagnostic Tool</a>
+            <a href="admin_panel.php">Admin Panel</a>
+        </nav>
+HTML;
+}
+
+function get_footer() {
+    return <<<HTML
+        <footer>
+            <p>For educational purposes only | House MD Theme | Penetration Testing Lab</p>
+            <p>Remember: "It's never lupus... except when it is."</p>
+        </footer>
+    </div>
+</body>
+</html>
+HTML;
+}
+?>
