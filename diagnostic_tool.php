@@ -19,14 +19,30 @@ HTML;
 
 if (!empty($url)) {
     echo '<div class="vuln-section">';
-    echo "<h3>Content from $url</h3>";
+    echo "<h3>Scan Results for: " . htmlspecialchars($url) . "</h3>";
     
-    $content = file_get_contents($url);
+    $content = @file_get_contents($url);
     
     if ($content !== false) {
-        echo "<pre>" . htmlspecialchars($content) . "</pre>";
+        // Try to detect if it's an image
+        $imageInfo = @getimagesizefromstring($content);
+        
+        if ($imageInfo !== false) {
+            // It's an image - display it
+            $mimeType = $imageInfo['mime'];
+            $base64 = base64_encode($content);
+            echo "<img src='data:$mimeType;base64,$base64' style='max-width:600px;'><br>";
+            echo "<p>Image metadata:</p>";
+            echo "<pre>Type: " . $imageInfo['mime'] . "\n";
+            echo "Dimensions: " . $imageInfo[0] . "x" . $imageInfo[1] . " pixels</pre>";
+        } else {
+            // Not an image - show raw content
+            echo "<p>Non-image content:</p>";
+            echo "<pre>" . htmlspecialchars($content) . "</pre>";
+        }
     } else {
-        echo "<p>ERROR: Could not fetch content</p>";
+        echo "<p>ERROR: Could not fetch content from URL</p>";
+        echo "<p>Error: " . error_get_last()['message'] . "</p>";
     }
     
     echo '</div>';
