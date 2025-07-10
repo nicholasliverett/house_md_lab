@@ -2,8 +2,6 @@
 require_once 'includes.php';
 
 echo get_header("Admin Terminal");
-display_user_status();
-echo get_navigation();
 
 // Check if user is admin
 if (!is_admin()) {
