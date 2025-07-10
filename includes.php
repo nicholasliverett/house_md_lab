@@ -80,10 +80,9 @@ function generate_session_id() {
 }
 
 function get_header($title, $quote = '') {
-    $session_id = generate_session_id();
     if(isset($_SESSION['user'])) {
-        $role = $_SESSION['role'] ?? 'unknown';
-        $user_status = "Logged in as: <strong>{$_SESSION['user']}</strong> $role";
+        $role = ucfirst($_SESSION['role'] ?? 'unknown');
+        $user_status = "$role <strong>{$_SESSION['user']}</strong>";
     } else {
         $user_status = "Not logged in";
     }
