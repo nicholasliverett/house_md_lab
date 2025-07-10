@@ -15,7 +15,7 @@ $patients = [
 $searchTerm = $_GET['search'] ?? '';
 
 
-if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee' && $_COOKIE['PHPSESSID'] === $specialEmployeeSession) {
+if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
 
     echo <<<HTML
         <div class="panel">
@@ -58,15 +58,15 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee' && $_COOKIE['PHP
     echo <<<HTML
         <div class="vuln-section">
             <h3>Do not Disclose this DATA!</h3>
-            <p>This data is HIPPA or something, NO SHARING: SHARING BAD</p>
+            <p>This data is HIPAA or something, NO SHARING: SHARING BAD</p>
         </div>
     HTML;
 } else {
     echo <<<HTML
         <div class="access-denied">
             <h3>Access Denied</h3>
-            <p>Patient search requires a specific employee session.</p>
-            <p>Only employees with the special session ID can access this feature.</p>
+            <p>Patient search is confidential see HIPAA.</p>
+            <p>Only employees can access this feature.</p>
         </div>
     HTML;
 }
