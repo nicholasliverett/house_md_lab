@@ -1,106 +1,93 @@
 <?php
 require_once 'includes.php';
 
-// Simulated admin session
-if (!isset($_SESSION['admin_logged_in'])) {
-    $_SESSION['admin_logged_in'] = false;
-}
-
-// Simulated user database
-$users = [
-    "house" => ["password" => "vicodin", "admin" => true],
-    "wilson" => ["password" => "cancer", "admin" => false],
-    "cuddy" => ["password" => "admin123", "admin" => true]
-];
-
-$message = '';
-
-// Login handling
-if (isset($_POST['login'])) {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-    
-    if (isset($users[$username]) && $users[$username]['password'] === $password) {
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['username'] = $username;
-        $message = "Login successful! Welcome, $username.";
-    } else {
-        $message = "Invalid credentials!";
-    }
-}
-
-// CSRF vulnerable action
-if (isset($_POST['toggle_admin']) && $_SESSION['admin_logged_in']) {
-    $targetUser = $_POST['username'];
-    
-    if (isset($users[$targetUser])) {
-        // Simulate privilege change
-        $users[$targetUser]['admin'] = !$users[$targetUser]['admin'];
-        $status = $users[$targetUser]['admin'] ? 'ADMIN' : 'USER';
-        $message = "Privileges updated for $targetUser. New status: $status";
-    } else {
-        $message = "User not found: $targetUser";
-    }
-}
+$lan_access = is_lan_client();
+$ip = $_SERVER['REMOTE_ADDR'];
 
 echo get_header("Admin Panel", "You can have all the facts and still be wrong.");
 
-if ($_SESSION['admin_logged_in']) {
-    $username = $_SESSION['username'];
-    echo "<div class='admin-panel'>";
-    echo "<h2>Welcome, Dr. $username</h2>";
-    
-    if ($message) {
-        echo "<p><strong>$message</strong></p>";
+echo <<<HTML
+    <div class="panel">
+        <h2>Administrator Portal</h2>
+        
+        <div class="access-status">
+            <div class="indicator {$lan_access ? 'granted' : 'denied'}"></div>
+            <span>LAN Access: {$lan_access ? 'GRANTED' : 'DENIED'}</span>
+        </div>
+        <p>Client IP: $ip</p>
+HTML;
+
+if ($lan_access) {
+    // Simulated admin actions
+    $message = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = $_POST['username'] ?? '';
+        $action = $_POST['action'] ?? '';
+        
+        $message = "Action performed: $action for user $username";
     }
     
-    // CSRF vulnerable form
-    echo <<<HTML
-        <div class="vuln-section">
-            <h3>User Privilege Management</h3>
-            <form method="POST">
-                <div class="form-group">
-                    <input type="text" name="username" placeholder="Enter username" required>
-                </div>
-                <button type="submit" name="toggle_admin">Toggle Admin Privileges</button>
-            </form>
-            <p>Current users: house, wilson, cuddy</p>
-        </div>
-    HTML;
+    if ($message) {
+        echo "<div class='vuln-section'><strong>$message</strong></div>";
+    }
     
-    echo "<p><a href='?logout=1'>Logout</a></p>";
-    echo "</div>";
+    echo <<<HTML
+        <div class="admin-content">
+            <h3>Hospital Management System</h3>
+            
+            <div class="vuln-section">
+                <h3>User Privilege Management (CSRF Vulnerable)</h3>
+                <form method="POST">
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" name="username" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Action:</label>
+                        <select name="action">
+                            <option value="grant_admin">Grant Admin Privileges</option>
+                            <option value="revoke_admin">Revoke Admin Privileges</option>
+                            <option value="reset_password">Reset Password</option>
+                        </select>
+                    </div>
+                    <button type="submit">Execute Action</button>
+                </form>
+                <p>This form is vulnerable to CSRF attacks as it lacks anti-CSRF tokens.</p>
+            </div>
+            
+            <h3>System Status</h3>
+            <ul>
+                <li>Patient Records: 1,248</li>
+                <li>Diagnostic Cases: 87</li>
+                <li>Active Staff: 42</li>
+            </ul>
+        </div>
+HTML;
 } else {
     echo <<<HTML
-        <div class="admin-panel">
-            <h2>Administrator Login</h2>
-            <p>Access restricted to authorized medical staff</p>
-            
-            <form method="POST">
-                <div class="form-group">
-                    <input type="text" name="username" placeholder="Username" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" placeholder="Password" required>
-                </div>
-                <button type="submit" name="login">Login</button>
-            </form>
-    HTML;
-    
-    if ($message) {
-        echo "<p style='color:#e74c3c;'>$message</p>";
-    }
-    
-    echo "</div>";
+        <div class="access-denied">
+            <h3>Access Restricted</h3>
+            <p>This admin panel is only accessible from the hospital's internal network.</p>
+            <p>Please connect to the Princeton-Plainsboro LAN to access these controls.</p>
+            <div class="warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                External access prohibited
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>Bypass Instructions</h3>
+            <p>To access this panel from outside the LAN:</p>
+            <ol>
+                <li>Use the Diagnostic Tool's SSRF vulnerability</li>
+                <li>Enter this URL: <code>http://localhost/admin_panel.php</code></li>
+                <li>The server will fetch the admin panel internally (LAN access)</li>
+            </ol>
+            <p>This demonstrates how SSRF can bypass network-level restrictions.</p>
+        </div>
+HTML;
 }
 
-// Logout handling
-if (isset($_GET['logout'])) {
-    $_SESSION['admin_logged_in'] = false;
-    session_destroy();
-    header("Location: admin_panel.php");
-    exit;
-}
-
+echo '</div>'; // Close panel
 echo get_footer();
 ?>
