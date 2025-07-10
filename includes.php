@@ -81,6 +81,12 @@ function generate_session_id() {
 
 function get_header($title, $quote = '') {
     $session_id = generate_session_id();
+    if(isset($_SESSION['user'])) {
+        $role = $_SESSION['role'] ?? 'unknown';
+        $user_status = "Logged in as: <strong>{$_SESSION['user']}</strong> $role";
+    } else {
+        $user_status = "Not logged in";
+    }
     return <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -193,6 +199,14 @@ function get_header($title, $quote = '') {
             border-radius: 8px;
             border: 1px solid #dee2e6;
         }
+        .user-status { 
+            text-align: right; 
+            padding: 10px 0; 
+            color: #7f8c8d; 
+        }
+        .user-status strong { 
+            color: var(--primary); 
+        }
     </style>
 </head>
 <body>
@@ -201,6 +215,10 @@ function get_header($title, $quote = '') {
             <h1>Princeton-Plainsboro Teaching Hospital</h1>
             <p>Department of Diagnostic Medicine</p>
         </header>
+
+        <div class="user-status">
+            $user_status
+        </div>
         
         <div class="house-quote">
             "$quote"
