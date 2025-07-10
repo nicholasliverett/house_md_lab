@@ -1,33 +1,22 @@
 <?php
+// includes.php - Simplified Design
 session_start();
 
 // Check if client is on LAN
 function is_lan_client() {
     $ip = $_SERVER['REMOTE_ADDR'];
-    
-    // LAN IP ranges
     $lan_ranges = [
-        '10.0.0.0/8',        // Class A private network
-        '172.16.0.0/12',     // Class B private networks
-        '192.168.0.0/16',    // Class C private networks
-        '127.0.0.0/8',       // Loopback addresses
-        '::1'                // IPv6 loopback
+        '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.0/8', '::1'
     ];
     
     foreach ($lan_ranges as $range) {
-        if (ip_in_range($ip, $range)) {
-            return true;
-        }
+        if (ip_in_range($ip, $range)) return true;
     }
     return false;
 }
 
-// Check if IP is in specified range
 function ip_in_range($ip, $range) {
-    if ($range === '::1') {
-        return $ip === '::1';
-    }
-    
+    if ($range === '::1') return $ip === '::1';
     list($subnet, $bits) = explode('/', $range);
     $ip = ip2long($ip);
     $subnet = ip2long($subnet);
@@ -36,7 +25,15 @@ function ip_in_range($ip, $range) {
     return ($ip & $mask) === $subnet;
 }
 
-function get_header($title, $quote) {
+function generate_session_id() {
+    if (!isset($_SESSION['vuln_session'])) {
+        $_SESSION['vuln_session'] = bin2hex(random_bytes(16));
+    }
+    return $_SESSION['vuln_session'];
+}
+
+function get_header($title, $quote = '') {
+    $session_id = generate_session_id();
     return <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -44,105 +41,99 @@ function get_header($title, $quote) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>$title - Princeton-Plainsboro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        
         header {
-            background: #2c3e50;
+            background-color: #2c3e50;
             color: white;
-            padding: 20px;
-            border-radius: 5px;
+            padding: 20px 0;
             text-align: center;
+            border-bottom: 4px solid #3498db;
         }
+        
         nav {
-            background: #3498db;
-            padding: 10px;
-            border-radius: 5px;
+            background-color: #34495e;
+            padding: 15px 0;
             margin: 20px 0;
         }
+        
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
         nav a {
             color: white;
             text-decoration: none;
             margin: 0 15px;
-            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s;
         }
-        .vulnerability-section {
-            border: 2px dashed #e74c3c;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
+        
+        nav a:hover {
+            background-color: #3498db;
         }
-        h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-        }
+        
         .house-quote {
             font-style: italic;
             color: #e74c3c;
             text-align: center;
             margin: 20px 0;
-            font-size: 1.2em;
-        }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #7f8c8d;
-        }
-        
-        .house-quote {
-            font-style: italic;
-            color: var(--accent);
-            text-align: center;
-            margin: 20px 0;
-            font-size: 1.3em;
-            padding: 15px;
-            border-left: 4px solid var(--accent);
-            background: rgba(231, 76, 60, 0.1);
-            border-radius: 0 8px 8px 0;
+            padding: 10px;
+            border-left: 3px solid #e74c3c;
+            background-color: #fdecea;
         }
         
         .panel {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
             margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e0e0e0;
         }
         
         h1, h2, h3 {
-            color: var(--primary);
+            color: #2c3e50;
             margin-bottom: 15px;
         }
         
         h1 {
-            border-bottom: 3px solid var(--secondary);
-            padding-bottom: 10px;
             font-size: 2.2rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
         }
         
         h2 {
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 8px;
             font-size: 1.8rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #3498db;
         }
         
         h3 {
             font-size: 1.4rem;
-            color: var(--secondary);
+            color: #2980b9;
         }
         
         .form-group {
@@ -152,42 +143,39 @@ function get_header($title, $quote) {
         input[type="text"], input[type="password"] {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid var(--secondary);
-            border-radius: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
-            transition: border-color 0.3s;
         }
         
         input:focus {
-            border-color: var(--primary);
+            border-color: #3498db;
             outline: none;
         }
         
         button {
-            background: var(--secondary);
+            background-color: #3498db;
             color: white;
             border: none;
             padding: 12px 25px;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
             transition: background 0.3s;
             margin-top: 10px;
-            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
         }
         
         button:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
+            background-color: #2980b9;
         }
         
         .vuln-section {
-            border: 2px dashed var(--accent);
+            border: 1px solid #e74c3c;
             padding: 20px;
             margin: 25px 0;
             border-radius: 8px;
-            background: rgba(231, 76, 60, 0.05);
+            background-color: #fdecea;
         }
         
         .access-status {
@@ -195,7 +183,7 @@ function get_header($title, $quote) {
             align-items: center;
             margin: 15px 0;
             padding: 10px;
-            background: #f5f5f5;
+            background-color: #f0f0f0;
             border-radius: 8px;
         }
         
@@ -207,18 +195,16 @@ function get_header($title, $quote) {
         }
         
         .granted {
-            background: var(--success);
-            box-shadow: 0 0 10px var(--success);
+            background-color: #2ecc71;
         }
         
         .denied {
-            background: var(--danger);
-            box-shadow: 0 0 10px var(--danger);
+            background-color: #e74c3c;
         }
         
         .admin-content, .access-denied {
             padding: 20px;
-            background: #f8f9fa;
+            background-color: #f8f9fa;
             border-radius: 8px;
             margin-top: 20px;
             border: 1px solid #e0e0e0;
@@ -226,25 +212,16 @@ function get_header($title, $quote) {
         
         .access-denied {
             text-align: center;
-            background: #ffebee;
+            background-color: #ffebee;
             border-color: #ffcdd2;
-        }
-        
-        .warning {
-            margin-top: 15px;
-            padding: 10px;
-            background: #fff8e1;
-            border-radius: 8px;
-            color: #ff8f00;
-            font-weight: bold;
         }
         
         .results {
             margin-top: 25px;
             padding: 20px;
-            background: #f0f8ff;
+            background-color: #f0f8ff;
             border-radius: 8px;
-            border: 1px dashed var(--secondary);
+            border: 1px solid #3498db;
         }
         
         .image-container {
@@ -257,58 +234,73 @@ function get_header($title, $quote) {
             max-height: 500px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .content-preview {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            max-height: 300px;
-            overflow: auto;
-            font-family: monospace;
-            white-space: pre-wrap;
         }
         
         footer {
             text-align: center;
             margin-top: 30px;
-            color: #ecf0f1;
+            color: #7f8c8d;
             padding: 15px;
             font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
         }
         
-        .login-container {
-            max-width: 500px;
-            margin: 50px auto;
-        }
-        
-        .instructions {
-            background: rgba(236, 240, 241, 0.9);
+        .patient-card {
+            border: 1px solid #3498db;
             border-radius: 8px;
             padding: 15px;
+            margin: 10px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .vulnerable-output {
+            display: inline-block;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        
+        .xss-payloads {
             margin: 20px 0;
         }
         
-        .instructions h3 {
-            color: var(--accent);
+        .payload {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
         }
         
-        .instructions ul {
-            padding-left: 20px;
-            margin: 10px 0;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
-        }
-        
-        code {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 2px 6px;
+        .payload code {
+            background-color: rgba(255,255,255,0.1);
+            display: block;
+            padding: 10px;
             border-radius: 4px;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        
+        .xss-tips {
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .session-info {
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
             font-family: monospace;
         }
     </style>
@@ -317,18 +309,20 @@ function get_header($title, $quote) {
     <div class="container">
         <header>
             <h1>Princeton-Plainsboro Teaching Hospital</h1>
-            <p>Department of Diagnostic Medicine</p>
+            <p>Penetration Testing Laboratory</p>
         </header>
         
         <div class="house-quote">
-            "$quote"
+            "It's never lupus... except when it is."
         </div>
         
         <nav>
-            <a href="index.php"><i class="fas fa-home"></i> Home</a>
-            <a href="patient_search.php"><i class="fas fa-search"></i> Patient Search</a>
-            <a href="diagnostic_tool.php"><i class="fas fa-x-ray"></i> Diagnostic Tool</a>
-            <a href="admin_panel.php"><i class="fas fa-lock"></i> Admin Panel</a>
+            <div class="nav-container">
+                <a href="index.php">Home</a>
+                <a href="patient_search.php">Patient Search</a>
+                <a href="diagnostic_tool.php">Diagnostic Tool</a>
+                <a href="admin_panel.php">Admin Panel</a>
+            </div>
         </nav>
 HTML;
 }
@@ -337,15 +331,11 @@ function get_footer() {
     return <<<HTML
         <footer>
             <p>For educational purposes only | House MD Theme | Penetration Testing Lab</p>
-            <p>Remember: "It's never lupus... except when it is." - Dr. Gregory House</p>
+            <p>Remember: "Everybody lies." - Dr. Gregory House</p>
         </footer>
     </div>
 </body>
 </html>
 HTML;
 }
-
-// Simulated admin credentials
-$ADMIN_USER = 'house';
-$ADMIN_PASS = 'vicodin';
 ?>
