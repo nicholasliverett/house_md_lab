@@ -161,9 +161,9 @@ function get_header($title, $quote = '') {
         
         <nav>
             <a href="index.php">Home</a>
-            <a href="patient_search.php">Patient Search</a>
-            <a href="diagnostic_tool.php">Diagnostic Tool</a>
-            <a href="admin_panel.php">Admin Panel</a>
+            <a href="staff_dir.php">Staff</a>
+            <a href="reviews.php">Reviews</a>
+            <a href="logout.php">Logout</a>
         </nav>
 HTML;
 }
