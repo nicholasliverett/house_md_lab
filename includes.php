@@ -46,77 +46,61 @@ function get_header($title, $quote) {
     <title>$title - Princeton-Plainsboro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background: linear-gradient(135deg, #1a2a6c, #2c3e50, #4a6491);
-            color: #333;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
             padding: 20px;
         }
-        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-        
-        header {
-            background: linear-gradient(to right, var(--primary), #4a6491);
-            color: white;
+            background: white;
             padding: 20px;
             border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
         nav {
-            background: var(--secondary);
-            padding: 15px;
-            border-radius: 8px;
+            background: #3498db;
+            padding: 10px;
+            border-radius: 5px;
             margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         }
-        
         nav a {
             color: white;
             text-decoration: none;
-            margin: 5px 15px;
+            margin: 0 15px;
             font-weight: bold;
-            font-size: 18px;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
         }
-        
-        nav a i {
-            margin-right: 8px;
+        .vulnerability-section {
+            border: 2px dashed #e74c3c;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
         }
-        
-        nav a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .house-quote {
+            font-style: italic;
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
         }
         
         .house-quote {
