@@ -42,266 +42,109 @@ function get_header($title, $quote = '') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>$title - Princeton-Plainsboro</title>
     <style>
-        * {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
             color: #333;
-            line-height: 1.6;
         }
-        
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 20px auto;
+            background: white;
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
-        
         header {
-            background-color: #2c3e50;
+            background: linear-gradient(to right, #2c3e50, #4a6491);
             color: white;
-            padding: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
             text-align: center;
-            border-bottom: 4px solid #3498db;
+            margin-bottom: 20px;
         }
-        
         nav {
-            background-color: #34495e;
-            padding: 15px 0;
+            background: #3498db;
+            padding: 12px;
+            border-radius: 6px;
             margin: 20px 0;
-        }
-        
-        .nav-container {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
         }
-        
         nav a {
             color: white;
             text-decoration: none;
-            margin: 0 15px;
+            margin: 0 20px;
+            font-weight: bold;
+            font-size: 18px;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
         }
-        
         nav a:hover {
-            background-color: #3498db;
+            background: rgba(255,255,255,0.2);
         }
-        
         .house-quote {
             font-style: italic;
             color: #e74c3c;
             text-align: center;
             margin: 20px 0;
+            font-size: 1.3em;
             padding: 10px;
-            border-left: 3px solid #e74c3c;
-            background-color: #fdecea;
+            border-left: 4px solid #e74c3c;
+            background: #fdecea;
         }
-        
-        .panel {
-            background-color: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 20px 0;
-            border: 1px solid #e0e0e0;
-        }
-        
-        h1, h2, h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-        
-        h1 {
-            font-size: 2.2rem;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #3498db;
-        }
-        
-        h3 {
-            font-size: 1.4rem;
-            color: #2980b9;
-        }
-        
-        .form-group {
-            margin: 20px 0;
-        }
-        
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        
-        input:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
         .vuln-section {
-            border: 1px solid #e74c3c;
+            border: 2px dashed #e74c3c;
             padding: 20px;
             margin: 25px 0;
             border-radius: 8px;
-            background-color: #fdecea;
+            background: #fffaf0;
         }
-        
-        .access-status {
-            display: flex;
-            align-items: center;
-            margin: 15px 0;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 8px;
-        }
-        
-        .indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        
-        .granted {
-            background-color: #2ecc71;
-        }
-        
-        .denied {
-            background-color: #e74c3c;
-        }
-        
-        .admin-content, .access-denied {
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .access-denied {
-            text-align: center;
-            background-color: #ffebee;
-            border-color: #ffcdd2;
-        }
-        
-        .results {
-            margin-top: 25px;
-            padding: 20px;
-            background-color: #f0f8ff;
-            border-radius: 8px;
-            border: 1px solid #3498db;
-        }
-        
-        .image-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .image-container img {
-            max-width: 100%;
-            max-height: 500px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        
         footer {
             text-align: center;
             margin-top: 30px;
             color: #7f8c8d;
             padding: 15px;
-            font-size: 0.9rem;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid #eee;
         }
-        
-        .patient-card {
-            border: 1px solid #3498db;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            background-color: #f8f9fa;
-        }
-        
-        .error-message {
-            background-color: #ffebee;
-            border: 1px solid #e74c3c;
-            border-radius: 8px;
-            padding: 15px;
+        .form-group {
             margin: 15px 0;
         }
-        
-        .vulnerable-output {
-            display: inline-block;
-            padding: 5px;
-            margin-top: 5px;
-        }
-        
-        .xss-payloads {
-            margin: 20px 0;
-        }
-        
-        .payload {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        
-        .payload code {
-            background-color: rgba(255,255,255,0.1);
-            display: block;
+        input[type="text"], input[type="password"] {
             padding: 10px;
+            width: 300px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            margin: 10px 0;
-            overflow-x: auto;
-            font-size: 14px;
+            font-size: 16px;
         }
-        
-        .xss-tips {
-            background-color: rgba(52, 152, 219, 0.1);
+        button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #c0392b;
+        }
+        .results {
+            background: #f9f9f9;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-top: 20px;
         }
-        
-        .session-info {
-            background-color: #e3f2fd;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-            font-family: monospace;
+        .admin-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
         }
     </style>
 </head>
@@ -309,20 +152,18 @@ function get_header($title, $quote = '') {
     <div class="container">
         <header>
             <h1>Princeton-Plainsboro Teaching Hospital</h1>
-            <p>Penetration Testing Laboratory</p>
+            <p>Department of Diagnostic Medicine</p>
         </header>
         
         <div class="house-quote">
-            "It's never lupus... except when it is."
+            "$quote"
         </div>
         
         <nav>
-            <div class="nav-container">
-                <a href="index.php">Home</a>
-                <a href="patient_search.php">Patient Search</a>
-                <a href="diagnostic_tool.php">Diagnostic Tool</a>
-                <a href="admin_panel.php">Admin Panel</a>
-            </div>
+            <a href="index.php">Home</a>
+            <a href="patient_search.php">Patient Search</a>
+            <a href="diagnostic_tool.php">Diagnostic Tool</a>
+            <a href="admin_panel.php">Admin Panel</a>
         </nav>
 HTML;
 }
@@ -331,11 +172,86 @@ function get_footer() {
     return <<<HTML
         <footer>
             <p>For educational purposes only | House MD Theme | Penetration Testing Lab</p>
-            <p>Remember: "Everybody lies." - Dr. Gregory House</p>
+            <p>Remember: "It's never lupus... except when it is."</p>
         </footer>
     </div>
 </body>
 </html>
 HTML;
 }
+?>
+2. index.php (Home Page)
+php
+<?php
+require_once 'includes.php';
+
+echo get_header("Diagnostic Medicine", "It's never lupus... except when it is.");
+
+echo <<<HTML
+    <h2>Welcome to the Diagnostic Department</h2>
+    <p>Under the direction of Dr. Gregory House, we specialize in complex medical cases that defy conventional diagnosis.</p>
+    
+    <div class="vuln-section">
+        <h3>Penetration Testing Laboratory</h3>
+        <p>This educational platform contains intentional vulnerabilities for security training:</p>
+        <ul>
+            <li><strong>XSS Vulnerability</strong>: Patient search functionality</li>
+            <li><strong>CSRF Vulnerability</strong>: Admin privilege modification</li>
+            <li><strong>SSRF Vulnerability</strong>: Diagnostic image viewer</li>
+        </ul>
+        <p>Use responsibly in a controlled environment.</p>
+    </div>
+HTML;
+
+echo get_footer();
+?>
+3. patient_search.php (XSS Vulnerability)
+php
+<?php
+require_once 'includes.php';
+
+// Simulated patient database
+$patients = [
+    ["id" => 1, "name" => "Rachel Dunne", "diagnosis" => "Sarcoidosis"],
+    ["id" => 2, "name" => "Harvey Park", "diagnosis" => "Amyloidosis"],
+    ["id" => 3, "name" => "Victoria Madsen", "diagnosis" => "Lupus"],
+    ["id" => 4, "name" => "Ethan Hodges", "diagnosis" => "Vasculitis"]
+];
+
+echo get_header("Patient Search", "Everybody lies. The question is, about what?");
+
+$searchTerm = $_GET['search'] ?? '';
+
+echo <<<HTML
+    <h2>Patient Records Search</h2>
+    <form method="GET">
+        <div class="form-group">
+            <input type="text" name="search" placeholder="Enter patient name" value="$searchTerm">
+            <button type="submit">Search</button>
+        </div>
+    </form>
+HTML;
+
+if ($searchTerm) {
+    echo '<div class="results">';
+    echo "<h3>Search Results for: $searchTerm</h3>";
+    
+    $found = false;
+    foreach ($patients as $patient) {
+        // Case-insensitive search (vulnerable to XSS)
+        if (stripos($patient['name'], $searchTerm) !== false) {
+            echo "<p><strong>{$patient['name']}</strong>: {$patient['diagnosis']}</p>";
+            $found = true;
+        }
+    }
+    
+    if (!$found) {
+        // Intentionally vulnerable to XSS (no output encoding)
+        echo "<p>No records found for: <strong>$searchTerm</strong></p>";
+    }
+    
+    echo '</div>';
+}
+
+echo get_footer();
 ?>
