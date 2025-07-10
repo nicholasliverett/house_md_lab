@@ -9,12 +9,12 @@ define('REVIEWS_DB', 'reviews.json');
 // Initialize databases if they don't exist
 if (!file_exists(USERS_DB)) {
     file_put_contents(USERS_DB, json_encode([
+        'admins' => ['house'],
         'employees' => [
             'house' => password_hash('vicodin', PASSWORD_DEFAULT),
             'wilson' => password_hash('oncology', PASSWORD_DEFAULT)
         ],
-        'patients' => [],
-        'admins' => ['house']
+        'patients' => []
     ]));
 }
 
@@ -72,29 +72,40 @@ function ip_in_range($ip, $range) {
     return ($ip & $mask) === $subnet;
 }
 
-function generate_session_id() {
-    if (!isset($_SESSION['vuln_session'])) {
-        $_SESSION['vuln_session'] = bin2hex(random_bytes(16));
-    }
-    return $_SESSION['vuln_session'];
-}
-
 function get_header($title, $quote = '') {
+    $user_status = '';
     if(isset($_SESSION['user'])) {
-        $role = ucfirst($_SESSION['role'] ?? 'unknown');
         $username = htmlspecialchars($_SESSION['user']);
+        
+        // Determine role with admin priority
+        $role = ucfirst($_SESSION['role'] ?? 'unknown');
+        if (is_admin()) {
+            $role = 'Admin';
+            $icon = 'fa-user-shield';
+            $color = 'rgba(46, 204, 113, 0.9)'; // Green for admin
+        } else {
+            $icon = ($_SESSION['role'] === 'employee') ? 'fa-user-md' : 'fa-user';
+            $color = 'rgba(52, 152, 219, 0.9)'; // Blue for others
+        }
+        
         $user_status = <<<HTML
-        <a href="logout.php" class="user-status-badge" title="Logout">
-            <i class="fas fa-user"></i> $role: {$username}
+        <a href="logout.php" class="user-status-badge" title="Logout" style="background: {$color}">
+            <i class="fas {$icon}"></i> {$role}: {$username}
         </a>
-        HTML;  
+HTML;
     } else {
         $user_status = <<<HTML
         <div class="user-status-badge">
             <i class="fas fa-user-times"></i> Not logged in
         </div>
-        HTML;
+HTML;
+    } if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
+        $employee_nav = <<<HTML
+            <a href="patient_search.php">Patient Reports</a>
+            <a href="admin_panel.php">Admin Panel</a>
+            <a href="terminal.php">Terminal</a>
     }
+    
     return <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -232,7 +243,6 @@ function get_header($title, $quote = '') {
             text-decoration: none;
             background: rgba(169, 169, 169, 0.2);
         }
-        
     </style>
 </head>
 <body>
@@ -251,7 +261,7 @@ function get_header($title, $quote = '') {
             <a href="index.php">Home</a>
             <a href="staff_dir.php">Staff</a>
             <a href="reviews.php">Reviews</a>
-            <a href="logout.php">Logout</a>
+            {$employee_nav}
         </nav>
 HTML;
 }
