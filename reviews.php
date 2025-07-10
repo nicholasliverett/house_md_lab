@@ -1,9 +1,7 @@
 <?php
 require_once 'includes.php';
 
-echo get_header("Hospital Reviews");
-display_user_status();
-echo get_navigation();
+echo get_header("Hospital Reviews", "Rating this teaching hospital below 4 stars is a symptom of lupus!");
 
 $reviews = get_reviews();
 ?>
