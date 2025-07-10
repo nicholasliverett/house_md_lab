@@ -3,15 +3,36 @@ require_once 'includes.php';
 
 echo get_header("Admin Terminal");
 
+echo <<<HTML 
+<div class="panel">
+    <h2>Admin Terminal</h2>
+HTML;
+
 // Check if user is admin
 if (!is_admin()) {
-    header('Location: index.php');
+    // Output HTML page with message and redirect logic
+    echo <<<HTML
+    <div class="message">You are not an administrator.</div>
+    <div class="countdown">Redirecting to homepage in <span id="count">10</span> seconds...</div>
+
+    <script>
+        let seconds = 10;
+        const countElement = document.getElementById('count');
+        
+        const timer = setInterval(() => {
+            seconds--;
+            countElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = 'index.php';
+            }
+        }, 1000);
+    </script>
+HTML;
     exit;
 }
 ?>
-
-<div class="panel">
-    <h2>Admin Terminal</h2>
     <div class="terminal">
         Princeton-Plainsboro Hospital System Terminal v2.4
         <br>Type 'help' for available commands
@@ -29,17 +50,6 @@ if (!is_admin()) {
         <input type="text" name="command" placeholder="Enter command..." required>
         <button type="submit">Execute</button>
     </form>
-    
-    <div class="vuln-section">
-        <h3>Command Injection Vulnerability</h3>
-        <p>This terminal executes system commands without proper validation.</p>
-        <p>Example commands:</p>
-        <ul>
-            <li><code>ls -la</code> - List directory contents</li>
-            <li><code>cat /etc/passwd</code> - View system passwords</li>
-            <li><code>rm -rf /</code> - Dangerous delete command</li>
-        </ul>
-    </div>
 </div>
 
 <?php echo get_footer(); ?>
