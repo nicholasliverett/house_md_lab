@@ -2,6 +2,7 @@
 require_once 'includes.php';
 
 echo get_header("Diagnostic Medicine", "It's never lupus... except when it is.");
+?>
 
 <div class="panel">
     <h2>Welcome to the Diagnostic Department</h2>
