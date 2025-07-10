@@ -1,7 +1,7 @@
 <?php
 require_once 'includes.php';
 
-echo get_header("Admin Terminal");
+echo get_header("Admin Terminal", "You have a terminal diagnosis....");
 
 echo '<div class="panel">';
 echo '<h2>Admin Terminal</h2>';

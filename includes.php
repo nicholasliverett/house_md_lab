@@ -82,9 +82,18 @@ function generate_session_id() {
 function get_header($title, $quote = '') {
     if(isset($_SESSION['user'])) {
         $role = ucfirst($_SESSION['role'] ?? 'unknown');
-        $user_status = "$role <strong>{$_SESSION['user']}</strong>";
+        $username = htmlspecialchars($_SESSION['user']);
+        $user_status = <<<HTML
+        <div class="user-status-badge">
+            <i class="fas fa-user"></i> $role: {$username}
+        </div>
+        HTML;  
     } else {
-        $user_status = "Not logged in";
+        $user_status = <<<HTML
+        <div class="user-status-badge">
+            <i class="fas fa-user-times"></i> Not logged in
+        </div>
+        HTML;
     }
     return <<<HTML
 <!DOCTYPE html>
@@ -110,12 +119,14 @@ function get_header($title, $quote = '') {
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
         header {
+            position: relative;
             background: linear-gradient(to right, #2c3e50, #4a6491);
             color: white;
             padding: 20px;
             border-radius: 8px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 20px; 
+            min-height: 120px;
         }
         nav {
             background: #3498db;
@@ -198,13 +209,27 @@ function get_header($title, $quote = '') {
             border-radius: 8px;
             border: 1px solid #dee2e6;
         }
-        .user-status { 
-            text-align: right; 
-            padding: 10px 0; 
-            color: #7f8c8d; 
-        }
         .user-status strong { 
             color: var(--primary); 
+        }
+        .user-status-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .user-status-badge i {
+            font-size: 16px;
         }
     </style>
 </head>
@@ -213,11 +238,8 @@ function get_header($title, $quote = '') {
         <header>
             <h1>Princeton-Plainsboro Teaching Hospital</h1>
             <p>Department of Diagnostic Medicine</p>
+            {$user_status}
         </header>
-
-        <div class="user-status">
-            $user_status
-        </div>
         
         <div class="house-quote">
             "$quote"
