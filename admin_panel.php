@@ -1,7 +1,7 @@
 <?php
 require_once 'includes.php';
 
-$lan_access = is_lan_client();
+$lan_access = is_lan_client() ? 'GRANTED' : 'DENIED';
 $ip = $_SERVER['REMOTE_ADDR'];
 
 echo get_header("Admin Panel", "You can have all the facts and still be wrong.");
@@ -11,8 +11,8 @@ echo <<<HTML
         <h2>Administrator Portal</h2>
         
         <div class="access-status">
-            <div class="indicator <?php echo ($lan_access) ? 'granted' : 'denied'; ?>"></div>
-            <span>LAN Access: <?php echo ($lan_access) ? 'GRANTED' : 'DENIED'; ?></span>
+            <div class="indicator {$lan_access}"></div>
+            <span>LAN Access: {$lan_access}</span>
         </div>
         <p>Client IP: $ip</p>
 HTML;
