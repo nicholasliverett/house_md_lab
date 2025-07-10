@@ -1,52 +1,104 @@
 <?php
+// diagnostic_tool.php - URL-only SSRF Vulnerability
 require_once 'includes.php';
 
-echo get_header("Diagnostic Tool", "Treating illness is why we became doctors. Treating patients is what makes most doctors miserable.");
+echo get_header("Diagnostic Tool", "Medical imaging requires network access...");
 
 $url = $_GET['image'] ?? '';
 
 echo <<<HTML
-    <h2>Medical Imaging Viewer</h2>
-    <p>View diagnostic scans and test results. Enter the image URL to load:</p>
-    
-    <form method="GET">
-        <div class="form-group">
-            <input type="text" name="image" placeholder="Enter image URL" value="$url">
-            <button type="submit">View Image</button>
-        </div>
-    </form>
+    <div class="panel">
+        <h2>Medical Imaging Viewer</h2>
+        <p>View diagnostic scans from networked PACS systems (HTTP/HTTPS only)</p>
+        
+        <form method="GET">
+            <div class="form-group">
+                <input type="text" name="image" placeholder="Enter image URL (http:// or https://)" value="$url">
+                <button type="submit">Retrieve Image</button>
+            </div>
+        </form>
 HTML;
 
 if (!empty($url)) {
     echo '<div class="vuln-section">';
-    echo "<h3>Scan Results for: " . htmlspecialchars($url) . "</h3>";
+    echo "<h3>Scan Results</h3>";
     
-    $content = @file_get_contents($url);
-    
-    if ($content !== false) {
-        // Try to detect if it's an image
-        $imageInfo = @getimagesizefromstring($content);
-        
-        if ($imageInfo !== false) {
-            // It's an image - display it
-            $mimeType = $imageInfo['mime'];
-            $base64 = base64_encode($content);
-            echo "<img src='data:$mimeType;base64,$base64' style='max-width:600px;'><br>";
-            echo "<p>Image metadata:</p>";
-            echo "<pre>Type: " . $imageInfo['mime'] . "\n";
-            echo "Dimensions: " . $imageInfo[0] . "x" . $imageInfo[1] . " pixels</pre>";
-        } else {
-            // Not an image - show raw content
-            echo "<p>Non-image content:</p>";
-            echo "<pre>" . htmlspecialchars($content) . "</pre>";
-        }
+    // Validate URL format
+    if (!preg_match('/^https?:\/\//i', $url)) {
+        echo "<div class='error-message'>";
+        echo "<h4>Invalid URL Format</h4>";
+        echo "<p>Only HTTP/HTTPS URLs are accepted by this system.</p>";
+        echo "<p>Example: <code>http://localhost/admin_panel.php</code></p>";
+        echo "</div>";
     } else {
-        echo "<p>ERROR: Could not fetch content from URL</p>";
-        echo "<p>Error: " . error_get_last()['message'] . "</p>";
+
+        // Intentionally vulnerable SSRF point (but only for URLs)
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true,
+                'follow_location' => 0, // Prevent redirect attacks
+                'timeout' => 5 // Short timeout
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false
+            ]
+        ]);
+        
+        $content = @file_get_contents($url, false, $context);
+        
+        if ($content !== false) {
+            $imageInfo = @getimagesizefromstring($content);
+            
+            if ($imageInfo !== false) {
+                // Display actual images
+                $mimeType = $imageInfo['mime'];
+                $base64 = base64_encode($content);
+                echo "<div class='image-container'>";
+                echo "<img src='data:$mimeType;base64,$base64' style='max-width:600px;'>";
+                echo "<div class='image-meta'>";
+                echo "Source: " . htmlspecialchars($url);
+                echo "</div></div>";
+            } else {
+                // Display non-image responses
+                echo "<div class='content-preview'>";
+                echo "<h4>Non-image response from:</h4>";
+                echo "<p><code>" . htmlspecialchars($url) . "</code></p>";
+                echo "<pre>" . htmlspecialchars(substr($content, 0, 1000)) . "</pre>";
+                echo "</div>";
+            }
+        } else {
+            echo "<div class='error-message'>";
+            echo "<h4>Error Retrieving URL</h4>";
+            echo "<p>Could not fetch content from: " . htmlspecialchars($url) . "</p>";
+            echo "<p>Error: " . (error_get_last()['message'] ?? 'Unknown error') . "</p>";
+            echo "</div>";
+        }
     }
     
     echo '</div>';
 }
+
+echo <<<HTML
+    <div class="vuln-section">
+        <h3>SSRF Vulnerability</h3>
+        <p>This medical viewer is vulnerable to <strong>server-side request forgery</strong> attacks.</p>
+        
+        <h4>Key Restrictions:</h4>
+        <ul>
+            <li>Only <code>http://</code> and <code>https://</code> URLs allowed</li>
+            <li>Common metadata endpoints blocked</li>
+            <li>Localhost access blocked</li>
+        </ul>
+        
+        <h4>Testing Methodology:</h4>
+        <ol>
+            <li>Identify external-facing HTTP services</li>
+            <li>Test for open ports on internal network</li>
+            <li>Attempt to access internal web interfaces</li>
+        </ol>
+    </div>
+HTML;
 
 echo get_footer();
 ?>
