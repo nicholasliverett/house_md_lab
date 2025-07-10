@@ -221,14 +221,18 @@ function get_header($title, $quote = '') {
             color: white;
             padding: 8px 15px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
+            transition: background 0.3s;
         }
-        .user-status-badge i {
-            font-size: 16px;
+        .user-status-badge:hover {
+            text-decoration: none;
+            background: rgba(169, 169, 169, 0.2);
         }
+        
     </style>
 </head>
 <body>
