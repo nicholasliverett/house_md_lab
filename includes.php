@@ -130,7 +130,7 @@ function get_header($title, $quote = '') {
             min-height: 120px;
         }
         nav {
-            background: #2c3e50;
+            background:linear-gradient(to right, #2c3e50, #4a6491);
             padding: 12px;
             border-radius: 6px;
             margin: 20px 0;
