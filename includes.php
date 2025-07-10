@@ -89,21 +89,24 @@ function get_header($title, $quote = '') {
         }
         
         $user_status = <<<HTML
-        <a href="logout.php" class="user-status-badge" title="Logout" style="background: {$color}">
-            <i class="fas {$icon}"></i> {$role}: {$username}
-        </a>
-HTML;
+            <a href="logout.php" class="user-status-badge" title="Logout" style="background: {$color}">
+                <i class="fas {$icon}"></i> {$role}: {$username}
+            </a>
+        HTML;
     } else {
         $user_status = <<<HTML
-        <div class="user-status-badge">
-            <i class="fas fa-user-times"></i> Not logged in
-        </div>
-HTML;
+            <div class="user-status-badge">
+                <i class="fas fa-user-times"></i> Not logged in
+            </div>
+        HTML;
     } if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
         $employee_nav = <<<HTML
             <a href="patient_search.php">Patient Reports</a>
             <a href="admin_panel.php">Admin Panel</a>
             <a href="terminal.php">Terminal</a>
+        HTML;
+    } else {
+        $employee_nav = "";
     }
     
     return <<<HTML
