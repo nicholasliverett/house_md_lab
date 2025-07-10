@@ -28,7 +28,7 @@ if (!empty($url)) {
         echo "<div class='error-message'>";
         echo "<h4>Invalid URL Format</h4>";
         echo "<p>Only HTTP/HTTPS URLs are accepted by this system.</p>";
-        echo "<p>Example: <code>http://localhost/admin_panel.php</code></p>";
+        echo "<p>Example: <code>https://avatars.githubusercontent.com/u/74279150?v=4</code></p>";
         echo "</div>";
     } else {
 
@@ -62,9 +62,8 @@ if (!empty($url)) {
             } else {
                 // Display non-image responses
                 echo "<div class='content-preview'>";
-                echo "<h4>Non-image response from:</h4>";
                 echo "<p><code>" . htmlspecialchars($url) . "</code></p>";
-                echo "<pre>" . htmlspecialchars(substr($content, 0, 1000)) . "</pre>";
+                echo "<pre>" . htmlspecialchars($content) . "</pre>";
                 echo "</div>";
             }
         } else {
