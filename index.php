@@ -43,5 +43,5 @@ echo get_header("Diagnostic Medicine", "It's never lupus... except when it is.")
     <?php endif; ?>
 </div>
 
-echo get_footer();
+<?php echo get_footer();
 ?>
