@@ -130,7 +130,7 @@ function get_header($title, $quote = '') {
             min-height: 120px;
         }
         nav {
-            background: #3498db;
+            background: #2c3e50;
             padding: 12px;
             border-radius: 6px;
             margin: 20px 0;
@@ -220,9 +220,8 @@ function get_header($title, $quote = '') {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             padding: 8px 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
-            border: 1px solid rgba(255,255,255,0.3);
             display: flex;
             align-items: center;
             gap: 8px;
