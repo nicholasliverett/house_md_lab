@@ -2,6 +2,53 @@
 // includes.php - Simplified Design
 session_start();
 
+// File-based database for simplicity
+define('USERS_DB', 'users.json');
+define('REVIEWS_DB', 'reviews.json');
+
+// Initialize databases if they don't exist
+if (!file_exists(USERS_DB)) {
+    file_put_contents(USERS_DB, json_encode([
+        'employees' => [
+            'house' => password_hash('vicodin', PASSWORD_DEFAULT),
+            'wilson' => password_hash('oncology', PASSWORD_DEFAULT)
+        ],
+        'patients' => [],
+        'admins' => ['house']
+    ]));
+}
+
+if (!file_exists(REVIEWS_DB)) {
+    file_put_contents(REVIEWS_DB, json_encode([]));
+}
+
+// Load databases
+function get_users() {
+    return json_decode(file_get_contents(USERS_DB), true);
+}
+
+function get_reviews() {
+    return json_decode(file_get_contents(REVIEWS_DB), true);
+}
+
+function save_users($users) {
+    file_put_contents(USERS_DB, json_encode($users));
+}
+
+function save_reviews($reviews) {
+    file_put_contents(REVIEWS_DB, json_encode($reviews));
+}
+
+// Special employee session for patient search
+$specialEmployeeSession = 'employee_special_session_12345';
+
+// Check if user is admin
+function is_admin() {
+    if (!isset($_SESSION['user'])) return false;
+    $users = get_users();
+    return in_array($_SESSION['user'], $users['admins']);
+}
+
 // Check if client is on LAN
 function is_lan_client() {
     $ip = $_SERVER['REMOTE_ADDR'];
