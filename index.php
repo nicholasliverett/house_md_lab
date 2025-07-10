@@ -1,21 +1,46 @@
 <?php
 require_once 'includes.php';
 
-echo get_header("Diagnostic Medicine", "It's never lupus... except when it is.");
+echo get_header("Diagnostic Medicine");
 
 echo <<<HTML
-    <h2>Welcome to the Diagnostic Department</h2>
-    <p>Under the direction of Dr. Gregory House, we specialize in complex medical cases that defy conventional diagnosis.</p>
-    
-    <div class="vuln-section">
-        <h3>Penetration Testing Laboratory</h3>
-        <p>This educational platform contains intentional vulnerabilities for security training:</p>
+    <div class="panel">
+        <h2>Penetration Testing Laboratory</h2>
+        <p>This educational platform contains intentional vulnerabilities for security training purposes.</p>
+        
+        <div class="session-info">
+        </div>
+        
+        <div class="vuln-section">
+            <h3>Lab Modules</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div class="panel" style="background-color: #f0f8ff;">
+                    <h3>XSS Vulnerability</h3>
+                    <p>Patient search functionality</p>
+                    <a href="patient_search.php" style="display: inline-block; background: #3498db; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; margin-top: 10px;">Access Module</a>
+                </div>
+                
+                <div class="panel" style="background-color: #fff8e1;">
+                    <h3>SSRF Vulnerability</h3>
+                    <p>Diagnostic image viewer</p>
+                    <a href="diagnostic_tool.php" style="display: inline-block; background: #f39c12; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; margin-top: 10px;">Access Module</a>
+                </div>
+                
+                <div class="panel" style="background-color: #ffebee;">
+                    <h3>CSRF Vulnerability</h3>
+                    <p>Admin privilege modification</p>
+                    <a href="admin_panel.php" style="display: inline-block; background: #e74c3c; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; margin-top: 10px;">Access Module</a>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Learning Objectives</h3>
         <ul>
-            <li><strong>XSS Vulnerability</strong>: Patient search functionality</li>
-            <li><strong>CSRF Vulnerability</strong>: Admin privilege modification</li>
-            <li><strong>SSRF Vulnerability</strong>: Diagnostic image viewer</li>
+            <li>Identify and exploit common web vulnerabilities</li>
+            <li>Understand real-world attack scenarios</li>
+            <li>Learn secure coding practices</li>
+            <li>Practice ethical hacking techniques</li>
         </ul>
-        <p>Use responsibly in a controlled environment.</p>
     </div>
 HTML;
 
