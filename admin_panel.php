@@ -17,7 +17,7 @@ echo <<<HTML
         <p>Client IP: $ip</p>
 HTML;
 
-if ($lan_access) {
+if ($lan_access == 'GRANTED') {
     // Simulated admin actions
     $message = '';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
