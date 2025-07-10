@@ -4,8 +4,8 @@ require_once 'includes.php';
 echo get_header("Admin Terminal");
 
 echo <<<HTML 
-<div class="panel">
-    <h2>Admin Terminal</h2>
+    <div class="panel">
+        <h2>Admin Terminal</h2>
 HTML;
 
 // Check if user is admin
