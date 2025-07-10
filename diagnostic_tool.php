@@ -79,26 +79,5 @@ if (!empty($url)) {
     echo '</div>';
 }
 
-echo <<<HTML
-    <div class="vuln-section">
-        <h3>SSRF Vulnerability</h3>
-        <p>This medical viewer is vulnerable to <strong>server-side request forgery</strong> attacks.</p>
-        
-        <h4>Key Restrictions:</h4>
-        <ul>
-            <li>Only <code>http://</code> and <code>https://</code> URLs allowed</li>
-            <li>Common metadata endpoints blocked</li>
-            <li>Localhost access blocked</li>
-        </ul>
-        
-        <h4>Testing Methodology:</h4>
-        <ol>
-            <li>Identify external-facing HTTP services</li>
-            <li>Test for open ports on internal network</li>
-            <li>Attempt to access internal web interfaces</li>
-        </ol>
-    </div>
-HTML;
-
 echo get_footer();
 ?>
