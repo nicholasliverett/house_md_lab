@@ -11,8 +11,8 @@ echo <<<HTML
         <h2>Administrator Portal</h2>
         
         <div class="access-status">
-            <div class="indicator <?php echo $lan_access ? 'granted' : 'denied'; ?>"></div>
-            <span>LAN Access: <?php echo $lan_access ? 'GRANTED' : 'DENIED'; ?></span>
+            <div class="indicator {$lan_access ? 'granted' : 'denied'}"></div>
+            <span>LAN Access: {($lan_access) ? 'GRANTED' : 'DENIED'}</span>
         </div>
         <p>Client IP: $ip</p>
 HTML;
@@ -73,17 +73,6 @@ HTML;
                 <i class="fas fa-exclamation-triangle"></i>
                 External access prohibited
             </div>
-        </div>
-        
-        <div class="instructions">
-            <h3>Bypass Instructions</h3>
-            <p>To access this panel from outside the LAN:</p>
-            <ol>
-                <li>Use the Diagnostic Tool's SSRF vulnerability</li>
-                <li>Enter this URL: <code>http://localhost/admin_panel.php</code></li>
-                <li>The server will fetch the admin panel internally (LAN access)</li>
-            </ol>
-            <p>This demonstrates how SSRF can bypass network-level restrictions.</p>
         </div>
 HTML;
 }
