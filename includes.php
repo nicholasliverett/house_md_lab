@@ -84,7 +84,7 @@ function get_header($title, $quote = '') {
         $role = ucfirst($_SESSION['role'] ?? 'unknown');
         $username = htmlspecialchars($_SESSION['user']);
         $user_status = <<<HTML
-        <div class="user-status-badge">
+        <a href="logout.php" class="user-status-badge">
             <i class="fas fa-user"></i> $role: {$username}
         </div>
         HTML;  
