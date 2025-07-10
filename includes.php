@@ -361,14 +361,6 @@ function get_footer() {
 HTML;
 }
 
-// Generate session ID for all vulnerabilities
-function generate_session_id() {
-    if (!isset($_SESSION['vuln_session'])) {
-        $_SESSION['vuln_session'] = bin2hex(random_bytes(16));
-    }
-    return $_SESSION['vuln_session'];
-}
-
 // Simulated admin credentials
 $ADMIN_USER = 'house';
 $ADMIN_PASS = 'vicodin';
