@@ -78,18 +78,12 @@ HTML;
                                         echo "<p><code>" . htmlspecialchars($url) . "</code></p>";
                                         echo "<pre>" . htmlspecialchars($content) . "</pre>";
                                         echo "</div>";
-                                    }
-                                    
-                                }
-                                
-                                echo '</div>';
+                                    } 
+                                }  
                                 
                             } catch (Exception $e) {
                                 echo '<p class="error"><strong>Error:</strong> '.htmlspecialchars($e->getMessage()).'</p>';
                             }
-                            
-                            // Still attempt to show as image (will fail for non-images)
-                            echo '<img src="'.htmlspecialchars($url).'" style="max-width:200px;" onerror="this.style.display=\'none\'">';
                         }
                     }
                     echo '</div>'; // Close report div
