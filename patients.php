@@ -49,7 +49,15 @@ HTML;
                             <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
 HTML;
                     if (!empty($report['image_url'])) {
-                        echo '<img src="' . htmlspecialchars($report['image_url']) . '">';
+                        try {
+                            $url = $report['image_url'];
+                            $image = fopen($url, 'rb');
+                            header("Content-Type: image/png");
+                            fpassthru($image);
+                            exit;
+                        } catch (Exception $e) {
+                            echo '<div class="error">Error loading image: ' . htmlspecialchars($e->getMessage()) . '</div>';
+                        }
                     }
                     echo '</div>';
                 }

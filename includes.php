@@ -315,6 +315,27 @@ function get_header($title, $quote = '') {
             margin-top: 10px;
             border-radius: 4px;
         }
+        input[type="checkbox"] {
+            width: auto;
+            height: auto;
+            margin-right: 8px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+        }
+
+        #diagnosisField {
+            transition: all 0.3s ease;
+}
     </style>
 </head>
 <body>
