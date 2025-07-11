@@ -37,15 +37,34 @@ $reviews = get_reviews();
     <div class="panel">
         <h3>Recent Reviews</h3>
         <?php foreach($reviews as $review): ?>
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="review-name"><?= htmlspecialchars($review['name']) ?></div>
-                    <div class="review-date"><?= $review['date'] ?></div>
+            <div class="review-card" style="
+                padding: 15px;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #ddd;
+            ">
+                <div class="review-header" style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                ">
+                    <div class="review-name" style="
+                        font-weight: bold;
+                        font-size: 1.1em;
+                    "><?= htmlspecialchars($review['name']) ?></div>
+                    <div class="review-date" style="
+                        color: #7f8c8d;
+                    "><?= $review['date'] ?></div>
                 </div>
-                <div class="review-rating">
+                <div class="review-rating" style="
+                    color: #e67e22;
+                    font-size: 1.2em;
+                    margin: 8px 0;
+                ">
                     <?= str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']) ?>
                 </div>
-                <div class="review-comment"><?= $review['comment'] ?></div>
+                <div class="review-comment" style="
+                    line-height: 1.5;
+                "><?= nl2br(htmlspecialchars($review['comment'])) ?></div>
             </div>
         <?php endforeach; ?>
     </div>
