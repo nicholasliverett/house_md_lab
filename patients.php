@@ -1,16 +1,7 @@
 <?php
-// patient_search.php - Enhanced XSS Vulnerability
 require_once 'includes.php';
 
-echo get_header("Patient Search", "Everybody lies. The question is, about what?");
-
-// Simulated patient database
-$patients = [
-    ["id" => 1, "name" => "Rachel Dunne", "diagnosis" => "Sarcoidosis"],
-    ["id" => 2, "name" => "Harvey Park", "diagnosis" => "Amyloidosis"],
-    ["id" => 3, "name" => "Victoria Madsen", "diagnosis" => "Lupus"],
-    ["id" => 4, "name" => "Ethan Hodges", "diagnosis" => "Vasculitis"],
-];
+echo get_header("Patient Reports", "Everybody lies. The question is, about what?");
 
 $searchTerm = $_GET['search'] ?? '';
 
@@ -30,7 +21,9 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
         echo '<div class="results">';
         echo "<h3>Search Results for: " . htmlspecialchars($searchTerm) . "</h3>";
         
+        $patients = get_patients();
         $found = false;
+        
         foreach ($patients as $patient) {
             if (stripos($patient['name'], $searchTerm) !== false) {
                 echo <<<HTML
@@ -42,6 +35,27 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
                     <h4>{$patient['name']}</h4>
                     <p><strong>Diagnosis:</strong> {$patient['diagnosis']}</p>
                     <a href="submit_report.php?patient_id={$patient['id']}" class="report-link">Submit Report</a>
+                    
+                    <div class="patient-reports">
+                        <h5>Previous Reports:</h5>
+                HTML;
+                
+                foreach ($patient['reports'] as $report) {
+                    echo <<<HTML
+                    <div class="report" style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                        <p><strong>Date:</strong> {$report['date']}</p>
+                        <p><strong>Doctor:</strong> {$report['doctor']}</p>
+                        <p><strong>Notes:</strong> {$report['notes']}</p>
+                        <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
+                        HTML;
+                        if (!empty($report['image_url'])) {
+                            echo '<img src="' . htmlspecialchars($report['image_url']) . '" style="max-width: 200px; margin-top: 10px;">';
+                        }
+                        echo '</div>';
+                }
+                
+                echo <<<HTML
+                    </div>
                 </div>
                 HTML;
                 $found = true;
@@ -64,28 +78,19 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
         echo '</div>';
     }
 
-    // Add patient report form
     echo <<<HTML
         <div class="panel">
-            <h3>Submit New Patient Report</h3>
-            <form action="submit_report.php" method="POST" enctype="multipart/form-data">
+            <h3>Add New Patient</h3>
+            <form action="add_patient.php" method="POST">
                 <div class="form-group">
-                    <label for="patient_name">Patient Name:</label>
-                    <input type="text" name="patient_name" id="patient_name" required>
+                    <label for="name">Patient Name:</label>
+                    <input type="text" name="name" id="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="diagnosis">Diagnosis:</label>
+                    <label for="diagnosis">Initial Diagnosis:</label>
                     <input type="text" name="diagnosis" id="diagnosis" required>
                 </div>
-                <div class="form-group">
-                    <label for="image_url">Image URL:</label>
-                    <input type="text" name="image_url" id="image_url">
-                </div>
-                <div class="form-group">
-                    <label for="notes">Doctor's Notes:</label>
-                    <textarea name="notes" id="notes" rows="4" required></textarea>
-                </div>
-                <button type="submit">Submit Report</button>
+                <button type="submit">Add Patient</button>
             </form>
         </div>
 

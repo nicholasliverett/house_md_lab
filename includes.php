@@ -23,8 +23,33 @@ if (!file_exists(REVIEWS_DB)) {
     file_put_contents(REVIEWS_DB, json_encode([]));
 }
 
-if (!file_exists(REPORTS_DB)) {
-    file_put_contents(REPORTS_DB, json_encode([]));
+if (!file_exists(PATIENTS_DB)) {
+    file_put_contents(PATIENTS_DB, json_encode([
+        [
+            "id" => 1,
+            "name" => "Rachel Dunne",
+            "diagnosis" => "Sarcoidosis",
+            "reports" => []
+        ],
+        [
+            "id" => 2,
+            "name" => "Harvey Park",
+            "diagnosis" => "Amyloidosis",
+            "reports" => []
+        ],
+        [
+            "id" => 3,
+            "name" => "Victoria Madsen",
+            "diagnosis" => "Lupus",
+            "reports" => []
+        ],
+        [
+            "id" => 4,
+            "name" => "Ethan Hodges",
+            "diagnosis" => "Vasculitis",
+            "reports" => []
+        ]
+    ]));
 }
 
 
@@ -38,7 +63,7 @@ function get_reviews() {
 }
 
 function get_reports() {
-    return json_decode(file_get_contents(REPORTS_DB), true);
+    return json_decode(file_get_contents(PATIENTS_DB), true);
 }
 
 function save_users($users) {
@@ -50,7 +75,28 @@ function save_reviews($reviews) {
 }
 
 function save_reports($reports) {
-    file_put_contents(REPORTS_DB, json_encode($reports));
+    file_put_contents(PATIENTS_DB, json_encode($reports));
+}
+
+function get_patient_by_id($id) {
+    $patients = get_patients();
+    foreach ($patients as $patient) {
+        if ($patient['id'] == $id) {
+            return $patient;
+        }
+    }
+    return null;
+}
+
+function update_patient($updatedPatient) {
+    $patients = get_patients();
+    foreach ($patients as &$patient) {
+        if ($patient['id'] == $updatedPatient['id']) {
+            $patient = $updatedPatient;
+            break;
+        }
+    }
+    save_patients($patients);
 }
 
 // Special employee session for patient search
@@ -115,7 +161,7 @@ function get_header($title, $quote = '') {
         HTML;
     } if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
         $employee_nav = <<<HTML
-            <a href="patient_search.php">Patient Reports</a>
+            <a href="patients.php">Patient Reports</a>
             <a href="admin_panel.php">Admin Panel</a>
             <a href="terminal.php">Terminal</a>
         HTML;
