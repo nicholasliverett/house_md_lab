@@ -74,11 +74,11 @@ HTML;
                                 } else {
                                     echo '<p><strong>Content Length:</strong> '.strlen($content).' bytes</p>';
                                     
-                                    // Show preview for text responses
+                                    // Display FULL content for text/html responses
                                     if (preg_match('/text|html|xml/i', $status)) {
                                         echo '<div class="content-preview">';
-                                        echo '<h5>Content Preview:</h5>';
-                                        echo $content;
+                                        echo '<h5>Full Response Content:</h5>';
+                                        echo '<div class="response-content">'.htmlspecialchars($content).'</div>';
                                         echo '</div>';
                                     }
                                 }
@@ -91,7 +91,7 @@ HTML;
                             
                             echo '</div>'; // Close ssrf-demo
                             
-                            // Still attempt to show as image
+                            // Still attempt to show as image (will fail for non-images)
                             echo '<img src="'.htmlspecialchars($url).'" style="max-width:200px;" onerror="this.style.display=\'none\'">';
                         }
                     }
