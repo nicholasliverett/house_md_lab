@@ -320,22 +320,23 @@ function get_header($title, $quote = '') {
             height: auto;
             margin-right: 8px;
         }
-
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 10px;
             margin: 15px 0;
         }
-
         .checkbox-group label {
             margin: 0;
             font-weight: normal;
         }
-
         #diagnosisField {
             transition: all 0.3s ease;
-}
+        }
+        .patient-card {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
     </style>
 </head>
 <body>
