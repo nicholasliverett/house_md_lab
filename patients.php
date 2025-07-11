@@ -23,9 +23,11 @@ HTML;
         
         $patients = get_patients();
         $found = false;
+
+        if (ob_get_level()) ob_end_clean();
         
         foreach ($patients as $patient) {
-            if (stripos($patient['name'], $searchTerm) !== false) {
+            if (empty($searchTerm) || stripos($patient['name'], $searchTerm) !== false) {
                 echo <<<HTML
                 <div class='patient-card' style="
                     padding: 15px;
@@ -51,32 +53,30 @@ HTML;
                     if (!empty($report['image_url'])) {
                         $url = $report['image_url'];
                         
-                        // Block file:// protocol to prevent LFI
+                        // Block file:// protocol
                         if (strpos($url, 'file://') === 0) {
                             echo '<div class="error">Local file access blocked</div>';
                         } else {
                             try {
-                                // Simple SSRF vulnerability - only for HTTP/HTTPS URLs
+                                // Get the content
                                 $content = file_get_contents($url);
                                 
-                                // Check if content looks like an image
-                                $imageTypes = ['image/png', 'image/jpeg', 'image/gif'];
-                                $finfo = new finfo(FILEINFO_MIME_TYPE);
-                                $mime = $finfo->buffer($content);
-                                
-                                if (in_array($mime, $imageTypes)) {
-                                    header("Content-Type: $mime");
+                                // Check if it's actually an image
+                                $imageInfo = @getimagesizefromstring($content);
+                                if ($imageInfo !== false) {
+                                    // It's a real image - display it
+                                    header("Content-Type: ".$imageInfo['mime']);
                                     echo $content;
                                     exit;
                                 } else {
-                                    // If not an image, display as plain text
+                                    // Not an image - show raw content
                                     header("Content-Type: text/plain");
-                                    echo $content;
+                                    echo "URL Content:\n\n";
+                                    echo htmlspecialchars($content);
                                     exit;
                                 }
                             } catch (Exception $e) {
-                                // Fallback to regular image tag
-                                echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;">';
+                                echo '<div class="error">Error: '.htmlspecialchars($e->getMessage()).'</div>';
                             }
                         }
                     }
