@@ -50,10 +50,7 @@ HTML;
                         if (!preg_match('/^https?:\/\//i', $url)) {
                             echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
-                            // Start SSRF demonstration
-                            echo '<div class="ssrf-demo">';
-                            echo '<h4>Server-Side Request Demonstration</h4>';
-                            
+
                             try {
                                 $context = stream_context_create([
                                     'http' => [
@@ -63,24 +60,26 @@ HTML;
                                 ]);
                                 
                                 $content = @file_get_contents($url, false, $context);
-                                $status = $http_response_header[0] ?? 'Unknown';
-                                
-                                echo '<div class="request-info">';
-                                echo '<p><strong>URL Requested:</strong> <code>'.htmlspecialchars($url).'</code></p>';
-                                echo '<p><strong>HTTP Status:</strong> <code>'.htmlspecialchars($status).'</code></p>';
                                 
                                 if ($content === false) {
                                     echo '<p class="error"><strong>Request Failed:</strong> Could not retrieve content</p>';
                                 } else {
-                                    echo '<p><strong>Content Length:</strong> '.strlen($content).' bytes</p>';
-                                    
-                                    // Display FULL content for text/html responses
-                                    if (preg_match('/text|html|xml/i', $status)) {
-                                        echo '<div class="content-preview">';
-                                        echo '<h5>Full Response Content:</h5>';
-                                        echo '<div class="response-content">'.htmlspecialchars($content).'</div>';
-                                        echo '</div>';
+                                    $imageInfo = @getimagesizefromstring($content);
+                                    if ($imageInfo !== false) {
+                                        $mimeType = $imageInfo['mime'];
+                                        $base64 = base64_encode($content);
+                                        echo "<div class='image-container'>";
+                                        echo "<img src='data:$mimeType;base64,$base64' style='max-width:600px;'>";
+                                        echo "<div class='image-meta'>";
+                                        echo "Source: " . htmlspecialchars($url);
+                                        echo "</div></div>";
+                                    } else {
+                                        echo "<div class='content-preview'>";
+                                        echo "<p><code>" . htmlspecialchars($url) . "</code></p>";
+                                        echo "<pre>" . htmlspecialchars($content) . "</pre>";
+                                        echo "</div>";
                                     }
+                                    
                                 }
                                 
                                 echo '</div>';
@@ -88,8 +87,6 @@ HTML;
                             } catch (Exception $e) {
                                 echo '<p class="error"><strong>Error:</strong> '.htmlspecialchars($e->getMessage()).'</p>';
                             }
-                            
-                            echo '</div>'; // Close ssrf-demo
                             
                             // Still attempt to show as image (will fail for non-images)
                             echo '<img src="'.htmlspecialchars($url).'" style="max-width:200px;" onerror="this.style.display=\'none\'">';
