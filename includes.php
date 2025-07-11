@@ -58,7 +58,7 @@ function get_reviews() {
     return json_decode(file_get_contents(REVIEWS_DB), true);
 }
 
-function get_reports() {
+function get_patients() {
     return json_decode(file_get_contents(PATIENTS_DB), true);
 }
 
@@ -70,7 +70,7 @@ function save_reviews($reviews) {
     file_put_contents(REVIEWS_DB, json_encode($reviews));
 }
 
-function save_reports($reports) {
+function save_patients($reports) {
     file_put_contents(PATIENTS_DB, json_encode($reports));
 }
 
