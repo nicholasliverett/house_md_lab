@@ -27,11 +27,7 @@ HTML;
         foreach ($patients as $patient) {
             if (empty($searchTerm) || stripos($patient['name'], $searchTerm) !== false) {
                 echo <<<HTML
-                <div class='patient-card' style="
-                    padding: 15px;
-                    margin-bottom: 15px;
-                    border-bottom: 1px solid #ddd;
-                ">
+                <div class='patient-card'>
                     <h4>{$patient['name']}</h4>
                     <p><strong>Diagnosis:</strong> {$patient['diagnosis']}</p>
                     <a href="submit_report.php?patient_id={$patient['id']}" class="report-link">Submit Report</a>
@@ -48,47 +44,55 @@ HTML;
                             <p><strong>Notes:</strong> {$report['notes']}</p>
                             <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
 HTML;
-                    // Inside the patient report display loop where image_url is processed:
                     if (!empty($report['image_url'])) {
                         $url = $report['image_url'];
                         
-                        // Block file:// protocol and other non-HTTP protocols
                         if (!preg_match('/^https?:\/\//i', $url)) {
                             echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
+                            // Start SSRF demonstration
+                            echo '<div class="ssrf-demo">';
+                            echo '<h4>Server-Side Request Demonstration</h4>';
+                            
                             try {
-                                // First make a server-side request
-                                $content = @file_get_contents($url);
+                                $context = stream_context_create([
+                                    'http' => [
+                                        'timeout' => 3,
+                                        'ignore_errors' => true
+                                    ]
+                                ]);
                                 
-                                // Then display information about the request
-                                echo '<div class="ssrf-info">';
-                                echo '<h4>Server-Side Request Information:</h4>';
-                                echo '<p><strong>URL Requested:</strong> ' . htmlspecialchars($url) . '</p>';
+                                $content = @file_get_contents($url, false, $context);
+                                $status = $http_response_header[0] ?? 'Unknown';
+                                
+                                echo '<div class="request-info">';
+                                echo '<p><strong>URL Requested:</strong> <code>'.htmlspecialchars($url).'</code></p>';
+                                echo '<p><strong>HTTP Status:</strong> <code>'.htmlspecialchars($status).'</code></p>';
                                 
                                 if ($content === false) {
-                                    echo '<p><strong>Status:</strong> Request failed</p>';
+                                    echo '<p class="error"><strong>Request Failed:</strong> Could not retrieve content</p>';
                                 } else {
-                                    echo '<p><strong>Status:</strong> Request succeeded</p>';
-                                    echo '<p><strong>Content Length:</strong> ' . strlen($content) . ' bytes</p>';
+                                    echo '<p><strong>Content Length:</strong> '.strlen($content).' bytes</p>';
                                     
-                                    // Show preview if content is text-based
-                                    if (preg_match('/text|html|xml/i', $http_response_header[0] ?? '')) {
+                                    // Show preview for text responses
+                                    if (preg_match('/text|html|xml/i', $status)) {
                                         echo '<div class="content-preview">';
-                                        echo '<h5>Content Preview (first 200 chars):</h5>';
-                                        echo '<pre>' . htmlspecialchars(substr($content, 0, 200)) . '</pre>';
+                                        echo '<h5>Content Preview:</h5>';
+                                        echo '<pre>'.htmlspecialchars(substr($content, 0, 500)).'</pre>';
                                         echo '</div>';
                                     }
                                 }
                                 
                                 echo '</div>';
                                 
-                                // Then try to display as regular image (will fail for non-images)
-                                echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
-                                
                             } catch (Exception $e) {
-                                echo '<div class="error">Error making server request: ' . 
-                                    htmlspecialchars($e->getMessage()) . '</div>';
+                                echo '<p class="error"><strong>Error:</strong> '.htmlspecialchars($e->getMessage()).'</p>';
                             }
+                            
+                            echo '</div>'; // Close ssrf-demo
+                            
+                            // Still attempt to show as image
+                            echo '<img src="'.htmlspecialchars($url).'" style="max-width:200px;" onerror="this.style.display=\'none\'">';
                         }
                     }
                     echo '</div>'; // Close report div
@@ -104,12 +108,7 @@ HTML;
         
         if (!$found) {
             echo <<<HTML
-            <div class='error-message' style="
-                padding: 15px;
-                background-color: #fdecea;
-                border-left: 4px solid #e74c3c;
-                margin: 20px 0;
-            ">
+            <div class='error-message'>
                 <p>No records found for: <strong>$searchTerm</strong></p>
             </div>
 HTML;
@@ -119,7 +118,7 @@ HTML;
     }
 
     echo <<<HTML
-        </div> <!-- Close the search panel div -->
+        </div> <!-- Close search panel -->
         
         <div class="panel">
             <h3>Add New Patient</h3>
@@ -144,13 +143,7 @@ HTML;
 HTML;
 } else {
     echo <<<HTML
-        <div class="access-denied" style="
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-            margin: 20px 0;
-        ">
+        <div class="access-denied">
             <h3>Access Denied</h3>
             <p>Patient search is confidential see HIPAA.</p>
             <p>Only employees can access this feature.</p>
