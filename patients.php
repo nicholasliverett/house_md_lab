@@ -17,78 +17,87 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
             </form>
 HTML;
 
-    if ($searchTerm) {
-        echo '<div class="results">';
-        echo "<h3>Search Results for: " . htmlspecialchars($searchTerm) . "</h3>";
-        
-        $patients = get_patients();
-        $found = false;
+    echo '<div class="results">';
+    echo "<h3>Search Results for: " . htmlspecialchars($searchTerm) . "</h3>";
+    $patients = get_patients();
+    $found = false;
 
-        if (ob_get_level()) ob_end_clean();
+    if ($searchTerm !== '') {  // Only filter if search term is not empty
+        $filteredPatients = array_filter($patients, function($patient) use ($searchTerm) {
+            return stripos($patient['name'], $searchTerm) !== false;
+        });
+    } else {
+        $filteredPatients = $patients;  // Show all patients when search is empty
+    }
+
+    // Display results
+    echo '<div class="results">';
+    if ($searchTerm !== '') {
+        echo "<h3>Search Results for: " . htmlspecialchars($searchTerm) . "</h3>";
+    }
         
-        foreach ($patients as $patient) {
-            if (empty($searchTerm) || stripos($patient['name'], $searchTerm) !== false) {
-                echo <<<HTML
-                <div class='patient-card' style="
-                    padding: 15px;
-                    margin-bottom: 15px;
-                    border-bottom: 1px solid #ddd;
-                ">
-                    <h4>{$patient['name']}</h4>
-                    <p><strong>Diagnosis:</strong> {$patient['diagnosis']}</p>
-                    <a href="submit_report.php?patient_id={$patient['id']}" class="report-link">Submit Report</a>
-                    
-                    <div class="patient-reports">
-                        <h5>Previous Reports:</h5>
-HTML;
+    foreach ($filteredPatients as $patient) {
+        if (empty($searchTerm) || stripos($patient['name'], $searchTerm) !== false) {
+            echo <<<HTML
+            <div class='patient-card' style="
+                padding: 15px;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #ddd;
+            ">
+                <h4>{$patient['name']}</h4>
+                <p><strong>Diagnosis:</strong> {$patient['diagnosis']}</p>
+                <a href="submit_report.php?patient_id={$patient['id']}" class="report-link">Submit Report</a>
                 
-                foreach ($patient['reports'] as $report) {
-                    echo <<<HTML
-                        <div class="report">
-                            <p><strong>Date:</strong> {$report['date']}</p>
-                            <p><strong>Doctor:</strong> {$report['doctor']}</p>
-                            <p><strong>Notes:</strong> {$report['notes']}</p>
-                            <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
+                <div class="patient-reports">
+                    <h5>Previous Reports:</h5>
 HTML;
-                    if (!empty($report['image_url'])) {
-                        $url = $report['image_url'];
-                        
-                        // Block file:// protocol
-                        if (strpos($url, 'file://') === 0) {
-                            echo '<div class="error">Local file access blocked</div>';
-                        } else {
-                            try {
-                                // Get the content
-                                $content = file_get_contents($url);
-                                
-                                // Check if it's actually an image
-                                $imageInfo = @getimagesizefromstring($content);
-                                if ($imageInfo !== false) {
-                                    // It's a real image - display it
-                                    header("Content-Type: ".$imageInfo['mime']);
-                                    echo $content;
-                                    exit;
-                                } else {
-                                    // Not an image - show raw content
-                                    header("Content-Type: text/plain");
-                                    echo "URL Content:\n\n";
-                                    echo htmlspecialchars($content);
-                                    exit;
-                                }
-                            } catch (Exception $e) {
-                                echo '<div class="error">Error: '.htmlspecialchars($e->getMessage()).'</div>';
+            
+            foreach ($patient['reports'] as $report) {
+                echo <<<HTML
+                    <div class="report">
+                        <p><strong>Date:</strong> {$report['date']}</p>
+                        <p><strong>Doctor:</strong> {$report['doctor']}</p>
+                        <p><strong>Notes:</strong> {$report['notes']}</p>
+                        <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
+HTML;
+                if (!empty($report['image_url'])) {
+                    $url = $report['image_url'];
+                    
+                    // Block file:// protocol
+                    if (strpos($url, 'file://') === 0) {
+                        echo '<div class="error">Local file access blocked</div>';
+                    } else {
+                        try {
+                            // Get the content
+                            $content = file_get_contents($url);
+                            
+                            // Check if it's actually an image
+                            $imageInfo = @getimagesizefromstring($content);
+                            if ($imageInfo !== false) {
+                                // It's a real image - display it
+                                header("Content-Type: ".$imageInfo['mime']);
+                                echo $content;
+                                exit;
+                            } else {
+                                // Not an image - show raw content
+                                header("Content-Type: text/plain");
+                                echo "URL Content:\n\n";
+                                echo htmlspecialchars($content);
+                                exit;
                             }
+                        } catch (Exception $e) {
+                            echo '<div class="error">Error: '.htmlspecialchars($e->getMessage()).'</div>';
                         }
                     }
-                    echo '</div>';
                 }
-                
-                echo <<<HTML
-                    </div>
-                </div>
-HTML;
-                $found = true;
+                echo '</div>';
             }
+            
+            echo <<<HTML
+                </div>
+            </div>
+HTML;
+            $found = true;
         }
         
         if (!$found) {
