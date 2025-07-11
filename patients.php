@@ -67,7 +67,6 @@ HTML;
                                     if ($content !== false) {
                                         echo '<div class="ssrf-content">';
                                         echo '<pre>' . htmlspecialchars($content) . '</pre>';
-                                        echo '</div>';
                                     }
                                 }
                             } catch (Exception $e) {
