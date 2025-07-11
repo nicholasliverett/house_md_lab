@@ -1,4 +1,14 @@
 <?php
+
+session_set_cookie_params([
+    'lifetime' => 86400,
+    'path' => '/',
+    'domain' => '.yourdomain.com', // Notice the leading dot for subdomains
+    'secure' => false,     // Should be true in production
+    'httponly' => false,   // Allows JavaScript access
+    'samesite' => 'None'   // Allows cross-site usage
+]);
+
 // includes.php - Simplified Design
 session_start();
 
