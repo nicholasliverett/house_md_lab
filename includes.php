@@ -331,11 +331,41 @@ function get_header($title, $quote = '') {
             font-weight: normal;
         }
         #diagnosisField {
-            transition: all 0.3s ease;
+            transition: all 0.8s ease;
         }
+        .report-link {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+        }
+
+        .report-link:hover {
+            background: #c0392b;
+            text-decoration: none;
+            color: white;
+        }
+
         .patient-card {
-            page-break-inside: avoid;
-            break-inside: avoid;
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .patient-reports {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
         }
     </style>
 </head>
