@@ -57,6 +57,7 @@ HTML;
                         if (!preg_match('/^https?:\/\//i', $url)) {
                             echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
+                            // RESTORED SSRF VULNERABILITY FOR EDUCATIONAL PURPOSES
                             try {
                                 // First try to display as regular image
                                 echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
@@ -74,7 +75,7 @@ HTML;
                             }
                         }
                     }
-                    //echo '</div>';
+                    echo '</div>'; // Close report div
                 }
                 
                 echo <<<HTML
@@ -98,9 +99,10 @@ HTML;
 HTML;
         }
         
-        echo '</div>';
+        echo '</div>'; // Close results div
     }
 
+    // Keep the form and HIPAA notice inside the container
     echo <<<HTML
         <div class="panel">
             <h3>Add New Patient</h3>
@@ -139,6 +141,5 @@ HTML;
 HTML;
 }
 
-echo '</div>';
 echo get_footer();
 ?>
