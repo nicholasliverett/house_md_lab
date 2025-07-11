@@ -98,7 +98,6 @@ HTML;
 HTML;
         }
         
-        echo '</div>'; // Close results div
     }
 
     // These elements will now appear inside the white panel
