@@ -23,8 +23,6 @@ HTML;
         
         $patients = get_patients();
         $found = false;
-
-        if (ob_get_level()) ob_end_clean();
         
         foreach ($patients as $patient) {
             if (empty($searchTerm) || stripos($patient['name'], $searchTerm) !== false) {
@@ -52,26 +50,10 @@ HTML;
 HTML;
                     if (!empty($report['image_url'])) {
                         $url = $report['image_url'];
-                        
-                        // Block file:// protocol and other non-HTTP protocols
                         if (!preg_match('/^https?:\/\//i', $url)) {
                             echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
-                            try {
-                                // First try to display as regular image
-                                echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
-                                
-                                // Then try to fetch content if it's an internal URL
-                                if (strpos($url, 'localhost') !== false || strpos($url, '127.0.0.1') !== false) {
-                                    $content = @file_get_contents($url);
-                                    if ($content !== false) {
-                                        echo '<div class="ssrf-content">';
-                                        echo '<pre>' . htmlspecialchars($content) . '</pre>';
-                                    }
-                                }
-                            } catch (Exception $e) {
-                                echo '<div class="error">Error loading content</div>';
-                            }
+                            echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
                         }
                     }
                     echo '</div>'; // Close report div
@@ -98,10 +80,13 @@ HTML;
 HTML;
         }
         
+        echo '</div>'; // Close results div
     }
 
-    // These elements will now appear inside the white panel
     echo <<<HTML
+        </div> <!-- Close the search panel div -->
+        
+        <div class="panel">
             <h3>Add New Patient</h3>
             <form action="add_patient.php" method="POST">
                 <div class="form-group">
@@ -114,13 +99,13 @@ HTML;
                 </div>
                 <button type="submit">Add Patient</button>
             </form>
+        </div>
 
         <div class="vuln-section">
             <h3>Do not Disclose this DATA!</h3>
             <p>This data is HIPAA or something, NO SHARING: SHARING BAD</p>
             <p>We have gone through great lengths to secure this part of the website, only staff have access to this page, and if you aren't staff you aren't reading this</p>
         </div>
-    </div>
 HTML;
 } else {
     echo <<<HTML
@@ -135,7 +120,6 @@ HTML;
             <p>Patient search is confidential see HIPAA.</p>
             <p>Only employees can access this feature.</p>
         </div>
-    </div>
 HTML;
 }
 
