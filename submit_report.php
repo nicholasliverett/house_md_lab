@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['error'] = 'Patient not found';
     }
     
-    header('Location: patient_search.php');
+    header('Location: patients.php');
     exit;
 }
 
@@ -62,8 +62,7 @@ if (isset($_GET['patient_id'])) {
                 
                 <div class="form-group">
                     <label for="image_url">Image URL:</label>
-                    <input type="text" name="image_url" id="image_url" placeholder="Try http://localhost/admin_panel.php">
-                    <small class="text-muted">For SSRF demo, try internal URLs like http://localhost/admin_panel.php</small>
+                    <input type="text" name="image_url" id="image_url">
                 </div>
                 
                 <div class="form-group">
