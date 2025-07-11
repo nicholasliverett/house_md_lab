@@ -135,6 +135,7 @@ HTML;
             <p>Patient search is confidential see HIPAA.</p>
             <p>Only employees can access this feature.</p>
         </div>
+    </div>
 HTML;
 }
 
