@@ -3,7 +3,6 @@
 session_set_cookie_params([
     'lifetime' => 86400,
     'path' => '/',
-    'secure' => false,     // Should be true in production
     'httponly' => false,   // Allows JavaScript access
     'samesite' => 'None'   // Allows cross-site usage
 ]);
@@ -377,14 +376,14 @@ function get_header($title, $quote = '') {
             background: #f9f9f9;
             padding: 15px;
             margin-bottom: 15px;
-            border-radius 8px;
+            border-radius: 8px;
             border: 1px solid #ddd;
         }
         .staff-card {
             background: #f9f9f9;
             padding: 15px;
             margin-bottom: 15px;
-            border-radius 8px;
+            border-radius: 8px;
             border: 1px solid #ddd;
         }
     </style>
