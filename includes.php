@@ -155,7 +155,7 @@ function get_header($title, $quote = '') {
                 <i class="fas fa-user-times"></i> Not logged in
             </div>
         HTML;
-    } if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
+    } if(isset($_SESSION['user']) && ($_SESSION['role'] === 'employee' || is_admin())) {
         $employee_nav = <<<HTML
             <a href="patients.php">Patient Reports</a>
             <a href="admin_panel.php">Admin Panel</a>
