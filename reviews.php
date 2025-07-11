@@ -37,11 +37,7 @@ $reviews = get_reviews();
     <div class="panel">
         <h3>Recent Reviews</h3>
         <?php foreach($reviews as $review): ?>
-            <div class="review-card" style="
-                padding: 15px;
-                margin-bottom: 15px;
-                border-bottom: 1px solid #ddd;
-            ">
+            <div class="review-card">
                 <div class="review-header" style="
                     display: flex;
                     justify-content: space-between;

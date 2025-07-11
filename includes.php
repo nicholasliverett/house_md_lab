@@ -3,7 +3,6 @@
 session_set_cookie_params([
     'lifetime' => 86400,
     'path' => '/',
-    'domain' => '.yourdomain.com', // Notice the leading dot for subdomains
     'secure' => false,     // Should be true in production
     'httponly' => false,   // Allows JavaScript access
     'samesite' => 'None'   // Allows cross-site usage
@@ -357,13 +356,11 @@ function get_header($title, $quote = '') {
             border: none;
             cursor: pointer;
         }
-
         .report-link:hover {
             background: #c0392b;
             text-decoration: none;
             color: white;
         }
-
         .patient-card {
             background: #f9f9f9;
             padding: 15px;
@@ -371,11 +368,24 @@ function get_header($title, $quote = '') {
             border-radius: 8px;
             border: 1px solid #ddd;
         }
-
         .patient-reports {
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid #eee;
+        }
+        .review-card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius 8px;
+            border: 1px solid #ddd;
+        }
+        .staff-card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius 8px;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
