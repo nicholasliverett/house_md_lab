@@ -49,14 +49,35 @@ HTML;
                             <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
 HTML;
                     if (!empty($report['image_url'])) {
-                        try {
-                            $url = $report['image_url'];
-                            $image = fopen($url, 'rb');
-                            header("Content-Type: image/png");
-                            fpassthru($image);
-                            exit;
-                        } catch (Exception $e) {
-                            echo '<div class="error">Error loading image: ' . htmlspecialchars($e->getMessage()) . '</div>';
+                        $url = $report['image_url'];
+                        
+                        // Block file:// protocol to prevent LFI
+                        if (strpos($url, 'file://') === 0) {
+                            echo '<div class="error">Local file access blocked</div>';
+                        } else {
+                            try {
+                                // Simple SSRF vulnerability - only for HTTP/HTTPS URLs
+                                $content = file_get_contents($url);
+                                
+                                // Check if content looks like an image
+                                $imageTypes = ['image/png', 'image/jpeg', 'image/gif'];
+                                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                                $mime = $finfo->buffer($content);
+                                
+                                if (in_array($mime, $imageTypes)) {
+                                    header("Content-Type: $mime");
+                                    echo $content;
+                                    exit;
+                                } else {
+                                    // If not an image, display as plain text
+                                    header("Content-Type: text/plain");
+                                    echo $content;
+                                    exit;
+                                }
+                            } catch (Exception $e) {
+                                // Fallback to regular image tag
+                                echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;">';
+                            }
                         }
                     }
                     echo '</div>';
