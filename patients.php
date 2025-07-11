@@ -53,30 +53,37 @@ HTML;
                     if (!empty($report['image_url'])) {
                         $url = $report['image_url'];
                         
-                        // Block file:// protocol
-                        if (strpos($url, 'file://') === 0) {
-                            echo '<div class="error">Local file access blocked</div>';
+                        // Block file:// protocol and other non-HTTP protocols
+                        if (!preg_match('/^https?:\/\//i', $url)) {
+                            echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
                             try {
-                                // Get the content
-                                $content = file_get_contents($url);
+                                $context = stream_context_create([
+                                    'http' => ['timeout' => 3],
+                                    'ssl' => [
+                                        'verify_peer' => false,
+                                        'verify_peer_name' => false,
+                                    ]
+                                ]);
                                 
-                                // Check if it's actually an image
+                                $content = file_get_contents($url, false, $context);
+                                
+                                // Try to detect if it's an image
                                 $imageInfo = @getimagesizefromstring($content);
                                 if ($imageInfo !== false) {
-                                    // It's a real image - display it
+                                    // It's an image - output as image
                                     header("Content-Type: ".$imageInfo['mime']);
                                     echo $content;
                                     exit;
                                 } else {
-                                    // Not an image - show raw content
+                                    // Not an image - output as text
                                     header("Content-Type: text/plain");
                                     echo "URL Content:\n\n";
-                                    echo htmlspecialchars($content);
+                                    echo $content;
                                     exit;
                                 }
                             } catch (Exception $e) {
-                                echo '<div class="error">Error: '.htmlspecialchars($e->getMessage()).'</div>';
+                                echo '<div class="error">Error fetching URL: '.htmlspecialchars($e->getMessage()).'</div>';
                             }
                         }
                     }
