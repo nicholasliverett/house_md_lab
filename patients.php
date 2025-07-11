@@ -42,14 +42,14 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
                 
                 foreach ($patient['reports'] as $report) {
                     echo <<<HTML
-                    <div class="report" style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                    <div class="report">
                         <p><strong>Date:</strong> {$report['date']}</p>
                         <p><strong>Doctor:</strong> {$report['doctor']}</p>
                         <p><strong>Notes:</strong> {$report['notes']}</p>
                         <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
                         HTML;
                         if (!empty($report['image_url'])) {
-                            echo '<img src="' . htmlspecialchars($report['image_url']) . '" style="max-width: 200px; margin-top: 10px;">';
+                            echo '<img src="' . htmlspecialchars($report['image_url']) . '>';
                         }
                         echo '</div>';
                 }

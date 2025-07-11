@@ -302,30 +302,14 @@ function get_header($title, $quote = '') {
             text-decoration: none;
             background: rgba(169, 169, 169, 0.2);
         }
-        .report-link {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 5px 10px;
-            background: #3498db;
-            color: white;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .report-link:hover {
-            background: #2980b9;
-        }
-
-        .patient-report {
+        .report {
             margin: 20px 0;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background: #f9f9f9;
         }
-
-        .patient-report img {
+        .report img {
             max-width: 100%;
             height: auto;
             margin-top: 10px;
