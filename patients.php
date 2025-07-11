@@ -78,7 +78,7 @@ HTML;
                                     if (preg_match('/text|html|xml/i', $status)) {
                                         echo '<div class="content-preview">';
                                         echo '<h5>Content Preview:</h5>';
-                                        echo '<pre>'.htmlspecialchars(substr($content, 0, 500)).'</pre>';
+                                        echo $content;
                                         echo '</div>';
                                     }
                                 }
