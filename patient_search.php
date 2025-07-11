@@ -9,7 +9,7 @@ $patients = [
     ["id" => 1, "name" => "Rachel Dunne", "diagnosis" => "Sarcoidosis"],
     ["id" => 2, "name" => "Harvey Park", "diagnosis" => "Amyloidosis"],
     ["id" => 3, "name" => "Victoria Madsen", "diagnosis" => "Lupus"],
-    ["id" => 4, "name" => "Ethan Hodges", "diagnosis" => "Vasculitis"]
+    ["id" => 4, "name" => "Ethan Hodges", "diagnosis" => "Vasculitis"],
 ];
 
 $searchTerm = $_GET['search'] ?? '';
@@ -32,9 +32,7 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
         
         $found = false;
         foreach ($patients as $patient) {
-            // Case-insensitive search (vulnerable to XSS in diagnosis)
             if (stripos($patient['name'], $searchTerm) !== false) {
-                // Intentionally vulnerable to XSS in diagnosis field
                 echo <<<HTML
                 <div class='patient-card' style="
                     padding: 15px;
@@ -43,6 +41,7 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
                 ">
                     <h4>{$patient['name']}</h4>
                     <p><strong>Diagnosis:</strong> {$patient['diagnosis']}</p>
+                    <a href="submit_report.php?patient_id={$patient['id']}" class="report-link">Submit Report</a>
                 </div>
                 HTML;
                 $found = true;
@@ -50,7 +49,6 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
         }
         
         if (!$found) {
-            // Intentionally vulnerable to XSS in error message
             echo <<<HTML
             <div class='error-message' style="
                 padding: 15px;
@@ -66,7 +64,31 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
         echo '</div>';
     }
 
+    // Add patient report form
     echo <<<HTML
+        <div class="panel">
+            <h3>Submit New Patient Report</h3>
+            <form action="submit_report.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="patient_name">Patient Name:</label>
+                    <input type="text" name="patient_name" id="patient_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="diagnosis">Diagnosis:</label>
+                    <input type="text" name="diagnosis" id="diagnosis" required>
+                </div>
+                <div class="form-group">
+                    <label for="image_url">Image URL:</label>
+                    <input type="text" name="image_url" id="image_url">
+                </div>
+                <div class="form-group">
+                    <label for="notes">Doctor's Notes:</label>
+                    <textarea name="notes" id="notes" rows="4" required></textarea>
+                </div>
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
+
         <div class="vuln-section">
             <h3>Do not Disclose this DATA!</h3>
             <p>This data is HIPAA or something, NO SHARING: SHARING BAD</p>
@@ -89,6 +111,6 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
     HTML;
 }
 
-echo '</div>'; // Close panel
+echo '</div>';
 echo get_footer();
 ?>

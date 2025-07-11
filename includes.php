@@ -5,6 +5,7 @@ session_start();
 // File-based database for simplicity
 define('USERS_DB', 'users.json');
 define('REVIEWS_DB', 'reviews.json');
+define('REPORTS_DB', 'reports.json');
 
 // Initialize databases if they don't exist
 if (!file_exists(USERS_DB)) {
@@ -22,6 +23,11 @@ if (!file_exists(REVIEWS_DB)) {
     file_put_contents(REVIEWS_DB, json_encode([]));
 }
 
+if (!file_exists(REPORTS_DB)) {
+    file_put_contents(REPORTS_DB, json_encode([]));
+}
+
+
 // Load databases
 function get_users() {
     return json_decode(file_get_contents(USERS_DB), true);
@@ -31,12 +37,20 @@ function get_reviews() {
     return json_decode(file_get_contents(REVIEWS_DB), true);
 }
 
+function get_reports() {
+    return json_decode(file_get_contents(REPORTS_DB), true);
+}
+
 function save_users($users) {
     file_put_contents(USERS_DB, json_encode($users));
 }
 
 function save_reviews($reviews) {
     file_put_contents(REVIEWS_DB, json_encode($reviews));
+}
+
+function save_reports($reports) {
+    file_put_contents(REPORTS_DB, json_encode($reports));
 }
 
 // Special employee session for patient search
@@ -245,6 +259,35 @@ function get_header($title, $quote = '') {
         .user-status-badge:hover {
             text-decoration: none;
             background: rgba(169, 169, 169, 0.2);
+        }
+        .report-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #3498db;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .report-link:hover {
+            background: #2980b9;
+        }
+
+        .patient-report {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .patient-report img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
