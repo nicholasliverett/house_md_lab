@@ -15,7 +15,7 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
                     <button type="submit">Search</button>
                 </div>
             </form>
-    HTML;
+HTML;
 
     if ($searchTerm) {
         echo '<div class="results">';
@@ -38,26 +38,26 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
                     
                     <div class="patient-reports">
                         <h5>Previous Reports:</h5>
-                HTML;
+HTML;
                 
                 foreach ($patient['reports'] as $report) {
                     echo <<<HTML
-                    <div class="report">
-                        <p><strong>Date:</strong> {$report['date']}</p>
-                        <p><strong>Doctor:</strong> {$report['doctor']}</p>
-                        <p><strong>Notes:</strong> {$report['notes']}</p>
-                        <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
-                        HTML;
-                        if (!empty($report['image_url'])) {
-                            echo '<img src="' . htmlspecialchars($report['image_url']) . '>';
-                        }
-                        echo '</div>';
+                        <div class="report">
+                            <p><strong>Date:</strong> {$report['date']}</p>
+                            <p><strong>Doctor:</strong> {$report['doctor']}</p>
+                            <p><strong>Notes:</strong> {$report['notes']}</p>
+                            <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
+HTML;
+                    if (!empty($report['image_url'])) {
+                        echo '<img src="' . htmlspecialchars($report['image_url']) . '">';
+                    }
+                    echo '</div>';
                 }
                 
                 echo <<<HTML
                     </div>
                 </div>
-                HTML;
+HTML;
                 $found = true;
             }
         }
@@ -72,7 +72,7 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
             ">
                 <p>No records found for: <strong>$searchTerm</strong></p>
             </div>
-            HTML;
+HTML;
         }
         
         echo '</div>';
@@ -99,7 +99,7 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
             <p>This data is HIPAA or something, NO SHARING: SHARING BAD</p>
             <p>We have gone through great lengths to secure this part of the website, only staff have access to this page, and if you aren't staff you aren't reading this</p>
         </div>
-    HTML;
+HTML;
 } else {
     echo <<<HTML
         <div class="access-denied" style="
@@ -113,7 +113,7 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
             <p>Patient search is confidential see HIPAA.</p>
             <p>Only employees can access this feature.</p>
         </div>
-    HTML;
+HTML;
 }
 
 echo '</div>';
