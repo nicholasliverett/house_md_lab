@@ -48,12 +48,47 @@ HTML;
                             <p><strong>Notes:</strong> {$report['notes']}</p>
                             <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
 HTML;
+                    // Inside the patient report display loop where image_url is processed:
                     if (!empty($report['image_url'])) {
                         $url = $report['image_url'];
+                        
+                        // Block file:// protocol and other non-HTTP protocols
                         if (!preg_match('/^https?:\/\//i', $url)) {
                             echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
-                            echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
+                            try {
+                                // First make a server-side request
+                                $content = @file_get_contents($url);
+                                
+                                // Then display information about the request
+                                echo '<div class="ssrf-info">';
+                                echo '<h4>Server-Side Request Information:</h4>';
+                                echo '<p><strong>URL Requested:</strong> ' . htmlspecialchars($url) . '</p>';
+                                
+                                if ($content === false) {
+                                    echo '<p><strong>Status:</strong> Request failed</p>';
+                                } else {
+                                    echo '<p><strong>Status:</strong> Request succeeded</p>';
+                                    echo '<p><strong>Content Length:</strong> ' . strlen($content) . ' bytes</p>';
+                                    
+                                    // Show preview if content is text-based
+                                    if (preg_match('/text|html|xml/i', $http_response_header[0] ?? '')) {
+                                        echo '<div class="content-preview">';
+                                        echo '<h5>Content Preview (first 200 chars):</h5>';
+                                        echo '<pre>' . htmlspecialchars(substr($content, 0, 200)) . '</pre>';
+                                        echo '</div>';
+                                    }
+                                }
+                                
+                                echo '</div>';
+                                
+                                // Then try to display as regular image (will fail for non-images)
+                                echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
+                                
+                            } catch (Exception $e) {
+                                echo '<div class="error">Error making server request: ' . 
+                                    htmlspecialchars($e->getMessage()) . '</div>';
+                            }
                         }
                     }
                     echo '</div>'; // Close report div
