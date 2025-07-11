@@ -103,9 +103,6 @@ HTML;
 
     // These elements will now appear inside the white panel
     echo <<<HTML
-        </div> <!-- Close the initial panel div -->
-        
-        <div class="panel">
             <h3>Add New Patient</h3>
             <form action="add_patient.php" method="POST">
                 <div class="form-group">
@@ -118,13 +115,13 @@ HTML;
                 </div>
                 <button type="submit">Add Patient</button>
             </form>
-        </div>
 
         <div class="vuln-section">
             <h3>Do not Disclose this DATA!</h3>
             <p>This data is HIPAA or something, NO SHARING: SHARING BAD</p>
             <p>We have gone through great lengths to secure this part of the website, only staff have access to this page, and if you aren't staff you aren't reading this</p>
         </div>
+    </div>
 HTML;
 } else {
     echo <<<HTML
