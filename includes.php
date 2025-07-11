@@ -5,7 +5,7 @@ session_start();
 // File-based database for simplicity
 define('USERS_DB', 'users.json');
 define('REVIEWS_DB', 'reviews.json');
-define('REPORTS_DB', 'reports.json');
+define('PATIENTS_DB', 'patients.json');
 
 // Initialize databases if they don't exist
 if (!file_exists(USERS_DB)) {
@@ -17,10 +17,6 @@ if (!file_exists(USERS_DB)) {
         ],
         'patients' => []
     ]));
-}
-
-if (!file_exists(REVIEWS_DB)) {
-    file_put_contents(REVIEWS_DB, json_encode([]));
 }
 
 if (!file_exists(PATIENTS_DB)) {
