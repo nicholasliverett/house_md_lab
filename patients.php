@@ -58,32 +58,20 @@ HTML;
                             echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
                             try {
-                                $context = stream_context_create([
-                                    'http' => ['timeout' => 3],
-                                    'ssl' => [
-                                        'verify_peer' => false,
-                                        'verify_peer_name' => false,
-                                    ]
-                                ]);
+                                // First try to display as regular image
+                                echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
                                 
-                                $content = file_get_contents($url, false, $context);
-                                
-                                // Try to detect if it's an image
-                                $imageInfo = @getimagesizefromstring($content);
-                                if ($imageInfo !== false) {
-                                    // It's an image - output as image
-                                    header("Content-Type: ".$imageInfo['mime']);
-                                    echo $content;
-                                    exit;
-                                } else {
-                                    // Not an image - output as text
-                                    header("Content-Type: text/plain");
-                                    echo "URL Content:\n\n";
-                                    echo $content;
-                                    exit;
+                                // Then try to fetch content if it's an internal URL
+                                if (strpos($url, 'localhost') !== false || strpos($url, '127.0.0.1') !== false) {
+                                    $content = @file_get_contents($url);
+                                    if ($content !== false) {
+                                        echo '<div class="ssrf-content">';
+                                        echo '<pre>' . htmlspecialchars($content) . '</pre>';
+                                        echo '</div>';
+                                    }
                                 }
                             } catch (Exception $e) {
-                                echo '<div class="error">Error fetching URL: '.htmlspecialchars($e->getMessage()).'</div>';
+                                echo '<div class="error">Error loading content</div>';
                             }
                         }
                     }
