@@ -57,7 +57,6 @@ HTML;
                         if (!preg_match('/^https?:\/\//i', $url)) {
                             echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
                         } else {
-                            // RESTORED SSRF VULNERABILITY FOR EDUCATIONAL PURPOSES
                             try {
                                 // First try to display as regular image
                                 echo '<img src="' . htmlspecialchars($url) . '" style="max-width: 200px;" onerror="this.style.display=\'none\'">';
@@ -102,8 +101,10 @@ HTML;
         echo '</div>'; // Close results div
     }
 
-    // Keep the form and HIPAA notice inside the container
+    // These elements will now appear inside the white panel
     echo <<<HTML
+        </div> <!-- Close the initial panel div -->
+        
         <div class="panel">
             <h3>Add New Patient</h3>
             <form action="add_patient.php" method="POST">
