@@ -66,7 +66,7 @@ if (!file_exists(PATIENTS_DB)) {
 }
 
 if (!file_exists(REVIEWS_DB)) {
-    file_put_contents(REVIEW_DB, json_encode([
+    file_put_contents(REVIEWS_DB, json_encode([
         [
             [
                 "name"=> "Carter Balls Haney",
