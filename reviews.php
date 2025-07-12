@@ -48,7 +48,7 @@ $reviews = get_reviews();
             </div>
             <!-- Vulnerable Rating Output -->
             <div class="review-rating" style="color: #e67e22; font-size: 1.2em; margin: 8px 0;">
-                <?= $review['rating'] ?>  <!-- UNSAFE OUTPUT -->
+                <?= str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']) ?>
             </div>
             <div class="review-comment" style="line-height: 1.5;">
                 <?= nl2br(htmlspecialchars($review['comment'])) ?>
