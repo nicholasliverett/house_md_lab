@@ -35,13 +35,13 @@ if (!file_exists(PATIENTS_DB)) {
             "name" => "Rachel Dunne",
             "diagnosis" => "Sarcoidosis",
             "reports" => [
-      {
-        "date": "2025-07-12 00:26:43",
-        "doctor": "house",
-        "diagnosis": "Buns",
-        "image_url": "https://blogcritics.org/wp-content/uploads/2014/06/house.jpg",
-        "notes": "She may lupus, but these buns be making me weak. I've decided buns then."
-    }
+                [
+                    "date" => "2025-07-12 00:26:43",
+                    "doctor" => "house",
+                    "diagnosis" => "Buns",
+                    "image_url" => "https://blogcritics.org/wp-content/uploads/2014/06/house.jpg",
+                    "notes" => "She may lupus, but these buns be making me weak. I've decided buns then."
+                ]
     ]
         ],
         [
