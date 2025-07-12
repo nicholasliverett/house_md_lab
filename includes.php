@@ -33,7 +33,7 @@ if (!file_exists(PATIENTS_DB)) {
         [
             "id" => 1,
             "name" => "Rachel Dunne",
-            "diagnosis" => "Sarcoidosis",
+            "diagnosis" => "Buns",
             "reports" => [
                 [
                     "date" => "2025-07-12 00:26:43",
