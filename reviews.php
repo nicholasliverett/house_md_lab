@@ -35,35 +35,27 @@ $reviews = get_reviews();
     </div>
     
     <div class="panel">
-        <h3>Recent Reviews</h3>
-        <?php foreach($reviews as $review): ?>
-            <div class="review-card">
-                <div class="review-header" style="
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 10px;
-                ">
-                    <div class="review-name" style="
-                        font-weight: bold;
-                        font-size: 1.1em;
-                    "><?= htmlspecialchars($review['name']) ?></div>
-                    <div class="review-date" style="
-                        color: #7f8c8d;
-                    "><?= $review['date'] ?></div>
+    <h3>Recent Reviews</h3>
+    <?php foreach($reviews as $review): ?>
+        <div class="review-card">
+            <div class="review-header" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <div class="review-name" style="font-weight: bold; font-size: 1.1em;">
+                    <?= htmlspecialchars($review['name']) ?>
                 </div>
-                <div class="review-rating" style="
-                    color: #e67e22;
-                    font-size: 1.2em;
-                    margin: 8px 0;
-                ">
-                    <?= str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']) ?>
+                <div class="review-date" style="color: #7f8c8d;">
+                    <?= $review['date'] ?>
                 </div>
-                <div class="review-comment" style="
-                    line-height: 1.5;
-                "><?= nl2br(htmlspecialchars($review['comment'])) ?></div>
             </div>
-        <?php endforeach; ?>
-    </div>
+            <!-- Vulnerable Rating Output -->
+            <div class="review-rating" style="color: #e67e22; font-size: 1.2em; margin: 8px 0;">
+                <?= $review['rating'] ?>  <!-- UNSAFE OUTPUT -->
+            </div>
+            <div class="review-comment" style="line-height: 1.5;">
+                <?= nl2br(htmlspecialchars($review['comment'])) ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
 </div>
 
 <?php echo get_footer(); ?>
