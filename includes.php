@@ -68,12 +68,10 @@ if (!file_exists(PATIENTS_DB)) {
 if (!file_exists(REVIEWS_DB)) {
     file_put_contents(REVIEWS_DB, json_encode([
         [
-            [
-                "name"=> "Carter Balls Haney",
-                "rating"=> 3,
-                "comment"=> "I had some pain and he hit me with his cane! I feel so much better now but I couldn't walk for 2 hours, hospital works I guess.",
-                "date"=> "2025-07-12 22:48:57"
-            ]
+            "name"=> "Carter Balls Haney",
+            "rating"=> 3,
+            "comment"=> "I had some pain and he hit me with his cane! I feel so much better now but I couldn't walk for 2 hours, hospital works I guess.",
+            "date"=> "2025-07-12 22:48:57"
         ]
     ]));
 }
