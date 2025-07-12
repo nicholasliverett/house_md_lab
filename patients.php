@@ -17,96 +17,99 @@ if(isset($_SESSION['user']) && $_SESSION['role'] === 'employee') {
             </form>
 HTML;
 
+    // Always show results, filtering only if searchTerm is not empty
+    echo '<div class="results">';
     if ($searchTerm) {
-        echo '<div class="results">';
         echo "<h3>Search Results for: " . htmlspecialchars($searchTerm) . "</h3>";
-        
-        $patients = get_patients();
-        $found = false;
-        
-        foreach ($patients as $patient) {
-            if (empty($searchTerm) || stripos($patient['name'], $searchTerm) !== false) {
-                echo <<<HTML
-                <div class='patient-card'>
-                    <h4>{$patient['name']}</h4>
-                    <p><strong>Diagnosis:</strong> {$patient['diagnosis']}</p>
-                    <a href="submit_report.php?patient_id={$patient['id']}" class="report-link">Submit Report</a>
-                    
-                    <div class="patient-reports">
-                        <h5>Previous Reports:</h5>
-HTML;
+    } else {
+        echo "<h3>All Patients</h3>";
+    }
+    
+    $patients = get_patients();
+    $found = false;
+    
+    foreach ($patients as $patient) {
+        if (empty($searchTerm) || stripos($patient['name'], $searchTerm) !== false) {
+            echo <<<HTML
+            <div class='patient-card'>
+                <h4>{$patient['name']}</h4>
+                <p><strong>Diagnosis:</strong> {$patient['diagnosis']}</p>
+                <a href="submit_report.php?patient_id={$patient['id']}" class="report-link">Submit Report</a>
                 
-                foreach ($patient['reports'] as $report) {
-                    echo <<<HTML
-                        <div class="report">
-                            <p><strong>Date:</strong> {$report['date']}</p>
-                            <p><strong>Doctor:</strong> {$report['doctor']}</p>
-                            <p><strong>Notes:</strong> {$report['notes']}</p>
-                            <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
+                <div class="patient-reports">
+                    <h5>Previous Reports:</h5>
 HTML;
-                    if (!empty($report['image_url'])) {
-                        $url = $report['image_url'];
-                        
-                        if (!preg_match('/^https?:\/\//i', $url)) {
-                            echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
-                        } else {
+            
+            foreach ($patient['reports'] as $report) {
+                echo <<<HTML
+                    <div class="report">
+                        <p><strong>Date:</strong> {$report['date']}</p>
+                        <p><strong>Doctor:</strong> {$report['doctor']}</p>
+                        <p><strong>Notes:</strong> {$report['notes']}</p>
+                        <p><strong>Diagnosis Update:</strong> {$report['diagnosis']}</p>
+HTML;
+                if (!empty($report['image_url'])) {
+                    $url = $report['image_url'];
+                    
+                    if (!preg_match('/^https?:\/\//i', $url)) {
+                        echo '<div class="error">Only HTTP/HTTPS URLs are allowed</div>';
+                    } else {
 
-                            try {
-                                $context = stream_context_create([
-                                    'http' => [
-                                        'timeout' => 3,
-                                        'ignore_errors' => true
-                                    ]
-                                ]);
-                                
-                                $content = @file_get_contents($url, false, $context);
-                                
-                                if ($content === false) {
-                                    echo '<p class="error"><strong>Request Failed:</strong> Could not retrieve content</p>';
+                        try {
+                            $context = stream_context_create([
+                                'http' => [
+                                    'timeout' => 3,
+                                    'ignore_errors' => true
+                                ]
+                            ]);
+                            
+                            $content = @file_get_contents($url, false, $context);
+                            
+                            if ($content === false) {
+                                echo '<p class="error"><strong>Request Failed:</strong> Could not retrieve content</p>';
+                            } else {
+                                $imageInfo = @getimagesizefromstring($content);
+                                if ($imageInfo !== false) {
+                                    $mimeType = $imageInfo['mime'];
+                                    $base64 = base64_encode($content);
+                                    echo "<div class='image-container'>";
+                                    echo "<img src='data:$mimeType;base64,$base64' style='max-width:600px;'>";
+                                    echo "<div class='image-meta'>";
+                                    echo "Source: " . htmlspecialchars($url);
+                                    echo "</div></div>";
                                 } else {
-                                    $imageInfo = @getimagesizefromstring($content);
-                                    if ($imageInfo !== false) {
-                                        $mimeType = $imageInfo['mime'];
-                                        $base64 = base64_encode($content);
-                                        echo "<div class='image-container'>";
-                                        echo "<img src='data:$mimeType;base64,$base64' style='max-width:600px;'>";
-                                        echo "<div class='image-meta'>";
-                                        echo "Source: " . htmlspecialchars($url);
-                                        echo "</div></div>";
-                                    } else {
-                                        echo "<div class='content-preview'>";
-                                        echo "<p><code>" . htmlspecialchars($url) . "</code></p>";
-                                        echo "<pre>" . htmlspecialchars($content) . "</pre>";
-                                        echo "</div>";
-                                    } 
-                                }  
-                                
-                            } catch (Exception $e) {
-                                echo '<p class="error"><strong>Error:</strong> '.htmlspecialchars($e->getMessage()).'</p>';
-                            }
+                                    echo "<div class='content-preview'>";
+                                    echo "<p><code>" . htmlspecialchars($url) . "</code></p>";
+                                    echo "<pre>" . htmlspecialchars($content) . "</pre>";
+                                    echo "</div>";
+                                } 
+                            }  
+                            
+                        } catch (Exception $e) {
+                            echo '<p class="error"><strong>Error:</strong> '.htmlspecialchars($e->getMessage()).'</p>';
                         }
                     }
-                    echo '</div>'; // Close report div
                 }
-                
-                echo <<<HTML
-                    </div>
-                </div>
-HTML;
-                $found = true;
+                echo '</div>'; // Close report div
             }
-        }
-        
-        if (!$found) {
+            
             echo <<<HTML
-            <div class='error-message'>
-                <p>No records found for: <strong>$searchTerm</strong></p>
+                </div>
             </div>
 HTML;
+            $found = true;
         }
-        
-        echo '</div>'; // Close results div
     }
+    
+    if (!$found && $searchTerm) {
+        echo <<<HTML
+        <div class='error-message'>
+            <p>No records found for: <strong>$searchTerm</strong></p>
+        </div>
+HTML;
+    }
+    
+    echo '</div>'; // Close results div
 
     echo <<<HTML
         </div> <!-- Close search panel -->
