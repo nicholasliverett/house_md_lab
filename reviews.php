@@ -34,24 +34,24 @@ $reviews = get_reviews();
         </form>
     </div>
     
-    <div class="panel">
+   <div class="panel">
     <h3>Recent Reviews</h3>
     <?php foreach($reviews as $review): ?>
         <div class="review-card">
             <div class="review-header" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                 <div class="review-name" style="font-weight: bold; font-size: 1.1em;">
-                    <?= htmlspecialchars($review['name']) ?>
+                    <?= htmlspecialchars($review['name']) ?>  <!-- Safe -->
                 </div>
                 <div class="review-date" style="color: #7f8c8d;">
-                    <?= $review['date'] ?>
+                    <?= $review['date'] ?>  <!-- Safe (server-generated) -->
                 </div>
             </div>
-            <!-- Vulnerable Rating Output -->
             <div class="review-rating" style="color: #e67e22; font-size: 1.2em; margin: 8px 0;">
-                <?= str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']) ?>
+                <?= str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']) ?>  <!-- Safe -->
             </div>
+            <!-- VULNERABLE COMMENT OUTPUT -->
             <div class="review-comment" style="line-height: 1.5;">
-                <?= nl2br(htmlspecialchars($review['comment'])) ?>
+                <?= $review['comment'] ?>  <!-- UNSAFE -->
             </div>
         </div>
     <?php endforeach; ?>
