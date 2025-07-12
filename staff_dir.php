@@ -28,33 +28,35 @@ echo <<<HTML
         </form>
 HTML;
 
+// Always show results, filtering only if searchTerm is not empty
+echo '<div class="results">';
 if ($searchTerm) {
-    echo '<div class="results">';
     echo "<h3>Search Results for: " . htmlspecialchars($searchTerm) . "</h3>";
-    
-    $found = false;
-    foreach ($staffs as $staff) {
-        // Case-insensitive search (vulnerable to XSS in role)
-        if (stripos($staff['name'], $searchTerm) !== false) {
-            // Intentionally vulnerable to XSS in role field
-            echo "<div class='staff-card'>";
-            echo "<h4>{$staff['name']}</h4>";
-            echo "<p><strong>Role:</strong> {$staff['role']}</p>";
-            echo "</div>";
-            $found = true;
-        }
-    }
-    
-    if (!$found) {
-        // Intentionally vulnerable to XSS in error message
-        echo "<div class='error-message'>";
-        echo "<p>No records found for: <strong>$searchTerm</strong></p>";
-        echo "</div>";
-    }
-    
-    echo '</div>';
+} else {
+    echo "<h3>All Staff Members</h3>";
 }
 
+$found = false;
+foreach ($staffs as $staff) {
+    // Show all staff if no search term, or filter if search term exists
+    if (empty($searchTerm) || stripos($staff['name'], $searchTerm) !== false) {
+        // Intentionally vulnerable to XSS in role field
+        echo "<div class='staff-card'>";
+        echo "<h4>{$staff['name']}</h4>";
+        echo "<p><strong>Role:</strong> {$staff['role']}</p>";
+        echo "</div>";
+        $found = true;
+    }
+}
+
+if (!$found && $searchTerm) {
+    // Intentionally vulnerable to XSS in error message
+    echo "<div class='error-message'>";
+    echo "<p>No records found for: <strong>$searchTerm</strong></p>";
+    echo "</div>";
+}
+
+echo '</div>'; // Close results
 echo '</div>'; // Close panel
 echo get_footer();
 ?>
