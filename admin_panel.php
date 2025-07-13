@@ -37,7 +37,7 @@ if ($lan_access == 'GRANTED') {
             
             <div class="vuln-section">
                 <h3>User Privilege Management (CSRF Vulnerable)</h3>
-                <form method="POST">
+                <form method="POST" action="submit_review.php">
                     <div class="form-group">
                         <label>Username:</label>
                         <input type="text" name="username" placeholder="Enter username" required>
